@@ -1,0 +1,14 @@
+# Handoff and Known Limitations
+- **Version/commit/artifact:**
+- **Owner / receiving team:**
+- **Purpose and supported workflows:**
+- **Prerequisites/configuration:**
+- **Run/test/shutdown commands:**
+- **External services/unavailable dependencies:**
+- **Known bugs/risks:**
+- **Mocked/simulated behavior:**
+- **Checks passed:**
+- **Checks failed/blocked/not run:**
+- **Data handling/scope restrictions:**
+- **Rollback/cleanup:**
+- **Next recommended action:**

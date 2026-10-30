@@ -1,0 +1,14 @@
+# Challenge Brief
+- Event/project:
+- Brief source and version/date:
+- Problem statement:
+- Target users:
+- Required outcomes and deliverables/formats:
+- Judging rubric / criteria:
+- Time limit / deadline:
+- Permitted tools, datasets and services:
+- Scope / authorization:
+- Explicit exclusions:
+- Environment constraints:
+- Clarifications needed:
+- Assumptions selected to proceed:

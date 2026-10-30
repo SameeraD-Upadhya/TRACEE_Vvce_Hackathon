@@ -1,0 +1,17 @@
+# Evidence Record
+- **Evidence ID / case-task ID:**
+- **Source artifact/system:**
+- **Collector / method:**
+- **Observed timestamp / original timezone:**
+- **Acquisition timestamp / timezone:**
+- **Hash algorithm/digest, if relevant:**
+- **Storage and access controls:**
+- **Processing tool/version:**
+- **Direct observation:**
+- **Interpretation, separated from observation:**
+- **Confidence and rationale:**
+- **Alternative explanations/caveats:**
+- **Reproduction details:**
+- **Working-copy transformations:**
+- **Chain-of-custody / transfer notes:**
+- **Redaction / retention constraints:**

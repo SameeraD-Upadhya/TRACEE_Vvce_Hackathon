@@ -1,0 +1,13 @@
+# Bug Report
+- **Title:**
+- **Environment/version/commit:**
+- **Severity and user impact:**
+- **Expected / actual behavior:**
+- **Reproduction steps / frequency:**
+- **Source paths / redacted logs:**
+- **Confirmed facts:**
+- **Competing hypotheses:**
+- **Distinguishing experiment:**
+- **Fix applied:**
+- **Regression check and result:**
+- **Remaining uncertainty:**

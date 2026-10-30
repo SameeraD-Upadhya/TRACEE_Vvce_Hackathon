@@ -1,0 +1,110 @@
+#!/bin/bash
+
+set -eEuo pipefail
+
+BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+usage() {
+    echo "Usage:"
+    echo "  ./tracee start"
+    echo "  TRACEE_API_VAULT_DIR=/path/to/vault ./tracee serve"
+    echo "  ./tracee query --run RUN_ID [options]"
+}
+
+if [[ "${1:-}" == "serve" ]]; then
+    exec python3 -m uvicorn \
+        tracee.api:app \
+        --app-dir "$BASE_DIR/src" \
+        --host 127.0.0.1 \
+        --port 8000
+fi
+
+if [[ "${1:-}" == "query" ]]; then
+    shift
+
+    exec python3 \
+        "$BASE_DIR/src/query_engine.py" \
+        "$@"
+fi
+
+if [[ "${1:-}" != "start" ]]; then
+    usage
+    exit 1
+fi
+
+export TRACEE_RUN_ID="TRACE-RUN-$(date -u +%Y%m%dT%H%M%S%N)"
+
+export TRACEE_INVESTIGATION_DIR="$BASE_DIR/investigations/$TRACEE_RUN_ID"
+export TRACEE_VAULT_RUN_DIR="$BASE_DIR/vault/$TRACEE_RUN_ID"
+export TRACEE_VAULT_EVIDENCE_DIR="$BASE_DIR/vault/$TRACEE_RUN_ID/evidence"
+export TRACEE_QUARANTINE_RUN_DIR="$BASE_DIR/quarantine/$TRACEE_RUN_ID"
+
+mkdir -p \
+    "$TRACEE_INVESTIGATION_DIR" \
+    "$TRACEE_VAULT_RUN_DIR" \
+    "$TRACEE_VAULT_EVIDENCE_DIR" \
+    "$BASE_DIR/vault/$TRACEE_RUN_ID/metadata" \
+    "$TRACEE_QUARANTINE_RUN_DIR"
+
+echo "[INFO] Run ID: $TRACEE_RUN_ID"
+
+echo "[INFO] Generating synthetic incident"
+
+python3 \
+    "$BASE_DIR/src/attack_generator.py"
+
+echo "[INFO] Creating investigation manifest"
+
+python3 \
+    "$BASE_DIR/src/manifest.py" \
+    start
+
+echo "[INFO] Ingesting evidence"
+
+python3 \
+    "$BASE_DIR/src/tracee.py"
+
+echo "[INFO] Verifying evidence integrity"
+
+python3 \
+    "$BASE_DIR/src/verify_vault.py"
+
+echo "[INFO] Verifying custody chain"
+
+python3 \
+    "$BASE_DIR/src/verify_custody.py"
+
+echo "[INFO] Parsing trusted evidence"
+
+python3 \
+    "$BASE_DIR/src/parser.py"
+
+echo "[INFO] Extracting entities"
+
+python3 \
+    "$BASE_DIR/src/entity_extractor.py"
+
+echo "[INFO] Correlating events"
+
+python3 \
+    "$BASE_DIR/src/correlator.py"
+
+echo "[INFO] Building incident timeline"
+
+python3 \
+    "$BASE_DIR/src/timeline.py"
+
+echo "[INFO] Building investigation graph"
+
+python3 \
+    "$BASE_DIR/src/graph_builder.py"
+
+python3 \
+    "$BASE_DIR/src/manifest.py" \
+    complete
+
+trap 'echo "[ERROR] Investigation failed" >&2' ERR
+
+echo "[PASS] Investigation completed"
+echo "[INFO] Run: $TRACEE_RUN_ID"
+echo "[INFO] Manifest: $TRACEE_INVESTIGATION_DIR/manifest.json"

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#11161d">
+    <meta name="description" content="Local TRACEE evidence inventory and integrity verification workspace.">
+    <title>TRACEE | Evidence Workspace</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/reconstruction-presentation.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" aria-label="TRACEE evidence workspace">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3.5 27 9.8v12.4L16 28.5 5 22.2V9.8L16 3.5Z"/><path d="M10 17.2h4l2-5.2 2.2 8 1.5-3H23"/></svg></span>
+          <span><strong>TRACEE</strong><small>FORENSIC WORKSPACE</small></span>
+        </a>
+
+        <div class="nav-caption">WORKSPACE</div>
+        <nav class="primary-nav" id="primary-nav">
+          <button class="nav-item active" data-view="dashboard" aria-current="page"><span class="nav-icon" aria-hidden="true">⌂</span>Dashboard</button>
+          <button class="nav-item" data-view="evidence"><span class="nav-icon" aria-hidden="true">▤</span>Evidence Explorer</button>
+          <button class="nav-item" data-view="verification"><span class="nav-icon" aria-hidden="true">◎</span>Integrity Verification</button>
+          <button class="nav-item" data-view="activity"><span class="nav-icon" aria-hidden="true">≡</span>Investigation Activity</button>
+          <button class="nav-item" data-view="analysis"><span class="nav-icon" aria-hidden="true">⌁</span>Event Analysis &amp; Reconstruction</button>
+          <button class="nav-item" data-view="timeline"><span class="nav-icon" aria-hidden="true">↗</span>Timeline &amp; Relationships</button>
+          <button class="nav-item" data-view="reports"><span class="nav-icon" aria-hidden="true">▧</span>Findings &amp; Reports</button>
+        </nav>
+
+        <div class="sidebar-footer"><span class="local-label"><span class="lock-icon" aria-hidden="true">▣</span>LOCAL WORKSPACE</span></div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="breadcrumb"><span>TRACEE</span><span class="crumb-separator">/</span><strong id="current-section">Dashboard</strong></div>
+          <div class="topbar-actions">
+            <span class="local-chip"><span class="status-dot pending" id="header-dot" aria-hidden="true"></span><span id="header-status" role="status">Checking API</span></span>
+            <button class="button button-secondary" id="api-session-button" type="button">Authorize API</button>
+            <button class="icon-button" id="refresh-button" aria-label="Refresh evidence inventory" title="Refresh evidence inventory"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.2 7.2A6.5 6.5 0 0 0 4.9 5.4L3.3 7M3.3 7V3.9M3.3 7h3.1M3.8 12.8a6.5 6.5 0 0 0 11.3 1.8l1.6-1.6m0 0v3.1m0-3.1h-3.1"/></svg></button>
+          </div>
+        </header>
+
+        <div class="content-wrap">
+          <section class="view active" id="view-dashboard" aria-labelledby="dashboard-title">
+            <div class="workspace-heading">
+              <div>
+                <div class="eyebrow">EVIDENCE MANAGEMENT</div>
+                <h1 id="dashboard-title">Evidence workspace</h1>
+                <p class="page-intro">Review persisted records in the configured vault.</p>
+              </div>
+              <div class="workspace-summary">
+                <div class="record-total"><span id="evidence-count">—</span><span>evidence records</span></div>
+                <button class="button button-secondary" data-go="evidence">Open Evidence Explorer <span aria-hidden="true">→</span></button>
+              </div>
+            </div>
+
+            <div id="global-alert" class="alert hidden" role="alert"></div>
+
+            <section class="inventory-workspace" aria-labelledby="inventory-title">
+              <div class="inventory-heading">
+                <div><h2 id="inventory-title">Vault inventory</h2><p id="dashboard-range">Loading persisted evidence records</p></div>
+                <div class="inventory-badges"><span id="vault-status" class="vault-status" role="status">Checking vault</span><span class="inventory-source">METADATA RECORDS</span></div>
+              </div>
+              <div id="dashboard-loading" class="inventory-state"><span class="spinner" aria-hidden="true"></span><span>Loading vault inventory</span></div>
+              <div id="dashboard-empty" class="inventory-state empty-state" hidden>
+                <span class="empty-mark" aria-hidden="true">—</span>
+                <div><h3>No evidence metadata records</h3><p>No evidence metadata records were found in the configured vault.</p></div>
+                <button class="button button-secondary" data-go="evidence">Open Evidence Explorer <span aria-hidden="true">→</span></button>
+              </div>
+              <div id="dashboard-unavailable" class="inventory-state unavailable-state" hidden>
+                <span class="empty-mark" aria-hidden="true">!</span>
+                <div><h3>Inventory unavailable</h3><p>Resolve the API or vault error above, then refresh the inventory.</p></div>
+              </div>
+              <div class="table-wrap" id="dashboard-table-wrap" hidden>
+                <table class="evidence-table">
+                  <thead><tr><th scope="col">EVIDENCE ID</th><th scope="col">FILE</th><th scope="col">INGESTED</th></tr></thead>
+                  <tbody id="dashboard-rows"></tbody>
+                </table>
+              </div>
+              <div class="inventory-foot" id="dashboard-foot" hidden><span id="dashboard-subset"></span><button class="text-button" data-go="evidence">View complete inventory <span aria-hidden="true">→</span></button></div>
+            </section>
+
+            <section class="tools-strip" aria-labelledby="tools-title">
+              <div class="tools-heading"><div><div class="eyebrow">WORKSPACE</div><h2 id="tools-title">Investigation tools</h2></div><p>Available actions for the current evidence vault</p></div>
+              <div class="tool-links">
+                <button class="tool-link" data-go="evidence"><span class="tool-symbol" aria-hidden="true">▤</span><span><strong>Evidence Explorer</strong><small>Search and inspect metadata</small></span><span class="tool-arrow" aria-hidden="true">→</span></button>
+                <button class="tool-link" data-go="verification"><span class="tool-symbol" aria-hidden="true">◎</span><span><strong>Integrity Verification</strong><small>Verify evidence and custody chain</small></span><span class="tool-arrow" aria-hidden="true">→</span></button>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="view-evidence" aria-labelledby="evidence-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">VAULT RECORDS</div><h1 id="evidence-title">Evidence Explorer</h1><p class="page-intro">Search the inventory and inspect a record retrieved from the API.</p></div></div>
+            <div id="evidence-error" class="alert hidden" role="alert"></div>
+            <div class="explorer-layout" id="explorer-layout">
+              <section class="records-panel" aria-label="Evidence inventory">
+                <div class="records-toolbar"><div class="records-actions"><div class="record-count" id="record-count">— records</div><button class="button button-primary" id="add-evidence-button" type="button">Add Evidence</button></div><label class="search-box"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.7" cy="8.7" r="5.7"/><path d="m13 13 4 4"/></svg><input id="evidence-search" type="search" placeholder="Search ID, filename, or media type" aria-label="Search evidence inventory"></label></div>
+                <div class="table-wrap"><table class="evidence-table"><thead><tr><th scope="col">EVIDENCE ID</th><th scope="col">FILE</th><th scope="col">INGESTED</th></tr></thead><tbody id="evidence-rows"></tbody></table></div>
+              </section>
+              <aside class="detail-panel" id="metadata-detail" aria-label="Selected evidence metadata" hidden></aside>
+            </div>
+          </section>
+
+          <section class="view" id="view-activity" aria-labelledby="activity-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">OPERATIONAL RECORD</div><h1 id="activity-title">Investigation Activity</h1><p class="page-intro">Review events recorded by the local TRACEE API.</p></div><button class="button button-secondary" id="activity-refresh-button" type="button">Refresh activity</button></div>
+            <div class="identity-notice" role="note"><strong>Actor identity is not individually authenticated.</strong><span>The shared API credential records an actor category only. Activity entries do not establish which named person performed an action.</span></div>
+            <div id="activity-error" class="alert hidden" role="alert"></div>
+            <section class="activity-panel" aria-label="Investigation activity log" aria-live="polite">
+              <div id="activity-loading" class="inventory-state" hidden><span class="spinner" aria-hidden="true"></span><span>Loading recorded activity</span></div>
+              <div id="activity-empty" class="activity-empty" hidden><h2>No activity recorded</h2><p>The API returned an empty activity log for this vault.</p></div>
+              <ol id="activity-list" class="activity-list" hidden></ol>
+            </section>
+          </section>
+
+          <section class="view" id="view-verification" aria-labelledby="verification-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">INTEGRITY CHECKS</div><h1 id="verification-title">Integrity Verification</h1><p class="page-intro">Run the API verification for a persisted evidence object.</p></div></div>
+            <div id="verification-error" class="alert hidden" role="alert"></div>
+            <div class="verification-layout">
+              <section class="verify-controls"><div class="panel-heading"><div><h2>Verify evidence</h2><p>Verification runs against the current vault state.</p></div></div>
+                <label class="field-label" for="verify-evidence-select">Evidence record</label><select id="verify-evidence-select"><option value="">Loading evidence records…</option></select>
+                <button class="button button-primary" id="verify-button" disabled><span>Run verification</span><span aria-hidden="true">→</span></button>
+                <p class="form-help">Integrity verification does not modify the evidence payload; the verification result is recorded in activity history.</p>
+              </section>
+              <section class="result-panel" id="verification-result" aria-live="polite"><div class="verification-prompt"><span class="detail-placeholder-icon" aria-hidden="true">◎</span><h2>No verification run</h2><p>Select an evidence record and run an integrity check.</p></div></section>
+            </div>
+          </section>
+
+          <section class="view" id="view-analysis" aria-labelledby="analysis-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">EVIDENCE-BACKED ANALYSIS</div><h1 id="analysis-title">Event Analysis &amp; Reconstruction</h1><p class="page-intro">Review stored parser output and explicitly run supported analysis or reconstruction operations.</p></div></div>
+            <div class="analysis-selection panel">
+              <div><label class="field-label" for="analysis-evidence-select">Evidence record</label><select id="analysis-evidence-select"><option value="">Select an evidence record</option></select></div>
+              <button class="button button-secondary" id="analysis-refresh-button" type="button">Refresh stored results</button>
+              <span id="analysis-evidence-status" class="form-help" role="status">Select evidence to browse stored results.</span>
+            </div>
+            <div id="analysis-error" class="alert hidden" role="alert"></div>
+            <div class="analysis-grid">
+              <section class="panel" aria-labelledby="analyses-title">
+                <div class="panel-heading"><div><h2 id="analyses-title">Stored analyses</h2><p>Choose a parser and run analysis manually, or browse a persisted run.</p></div></div>
+                <div class="analysis-controls"><label class="field-label" for="analysis-parser">Parser</label><select id="analysis-parser"><option value="linux_auth">Linux authentication log</option><option value="json_event">JSON event records</option><option value="systemd_journal">systemd journal JSON export</option></select><button class="button button-primary" id="run-analysis-button" type="button" disabled>Run analysis</button></div>
+                <label class="field-label" for="analysis-run-select">Stored analysis</label><select id="analysis-run-select"><option value="">No analysis selected</option></select>
+                <div class="analysis-actions"><button class="button button-secondary" id="load-analysis-button" type="button" disabled>Load selected analysis</button><button class="button button-secondary" id="analyses-prev" type="button" disabled>Previous</button><button class="button button-secondary" id="analyses-next" type="button" disabled>Next</button></div>
+                <div id="analysis-summary" class="analysis-summary" aria-live="polite"><p class="form-help">No analysis run selected.</p></div>
+                <div id="analysis-detail" class="analysis-detail"></div>
+              </section>
+              <section class="panel" aria-labelledby="reconstruction-title">
+                <div class="panel-heading"><div><h2 id="reconstruction-title">Candidate reconstruction</h2><p>Rule-based hypotheses retain their source observation references and limitations.</p></div></div>
+                <div id="reconstruction-rules" class="rule-list" aria-live="polite"></div>
+                <label class="field-label" for="candidate-window">Candidate window (seconds)</label><input id="candidate-window" type="number" min="0" max="86400" step="1" value="300">
+                <button class="button button-primary" id="run-reconstruction-button" type="button" disabled>Run reconstruction for selected analysis</button>
+                <p class="form-help">This creates a persisted candidate reconstruction only when you activate the button. Results are hypotheses for investigator review.</p>
+                <label class="field-label" for="reconstruction-run-select">Stored reconstruction</label><select id="reconstruction-run-select"><option value="">No reconstruction selected</option></select>
+                <div class="analysis-actions"><button class="button button-secondary" id="load-reconstruction-button" type="button" disabled>Load selected reconstruction</button><button class="button button-secondary" id="reconstructions-prev" type="button" disabled>Previous</button><button class="button button-secondary" id="reconstructions-next" type="button" disabled>Next</button></div>
+                <div id="reconstruction-summary" class="analysis-summary" aria-live="polite"><p class="form-help">No reconstruction run selected.</p></div>
+                <div id="reconstruction-detail" class="analysis-detail"></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" id="view-timeline" aria-labelledby="timeline-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">ANALYSIS</div><h1 id="timeline-title">Timeline &amp; Relationships</h1><p class="page-intro">Review normalized event times from a stored, validated analysis. Temporal proximity does not establish causality.</p></div></div>
+            <section class="panel timeline-controls" aria-label="Timeline source selection">
+              <div><label class="field-label" for="timeline-evidence-select">Evidence record</label><select id="timeline-evidence-select"><option value="">Select an evidence record</option></select></div>
+              <div><label class="field-label" for="timeline-analysis-select">Stored analysis</label><select id="timeline-analysis-select" disabled><option value="">Select evidence first</option></select></div>
+              <div class="timeline-actions"><button class="button button-secondary" id="timeline-refresh-button" type="button">Refresh analyses</button><button class="button button-primary" id="timeline-load-button" type="button" disabled>Load timeline</button></div>
+              <p id="timeline-status" class="form-help" role="status">Select evidence and a stored analysis, then load the timeline.</p>
+            </section>
+            <div id="timeline-error" class="alert hidden" role="alert"></div>
+            <div id="timeline-no-analysis" class="unavailable-panel" hidden><span class="unavailable-mark" aria-hidden="true">i</span><div><h2>No stored analysis available</h2><p>Run Event Analysis for this evidence before loading a timeline. Timeline view does not run analysis or reconstruction.</p><button class="button button-secondary" id="timeline-go-analysis" data-go="analysis" type="button">Open Event Analysis</button></div></div>
+            <section class="timeline-panel" aria-label="Evidence-backed event timeline" aria-live="polite">
+              <div id="timeline-summary" class="timeline-summary" hidden></div>
+              <div class="timeline-columns">
+                <section aria-labelledby="timeline-known-title"><h2 class="subsection-title" id="timeline-known-title">Known UTC extent</h2><ol class="timeline-list" id="timeline-known-list"></ol></section>
+                <section aria-labelledby="timeline-unresolved-title"><h2 class="subsection-title" id="timeline-unresolved-title">Unresolved time</h2><ol class="timeline-list" id="timeline-unresolved-list"></ol></section>
+              </div>
+              <div id="timeline-detail" class="panel timeline-detail" hidden></div>
+              <div class="analysis-actions timeline-pagination"><button class="button button-secondary" id="timeline-prev" type="button" disabled>Previous</button><span id="timeline-page-status" class="form-help"></span><button class="button button-secondary" id="timeline-next" type="button" disabled>Next</button></div>
+            </section>
+            <section class="unavailable-panel relationships-notice"><span class="unavailable-mark" aria-hidden="true">—</span><div><h2>Relationships are not available</h2><p>The API does not expose relationship data. Timeline order represents normalized time only; it does not imply a causal link or incident.</p></div></section>
+          </section>
+
+          <section class="view" id="view-reports" aria-labelledby="reports-title" hidden>
+            <div class="page-heading"><div><div class="eyebrow">CASE OUTPUT</div><h1 id="reports-title">Findings &amp; Reports</h1><p class="page-intro">Review investigation findings and prepare case output.</p></div></div>
+            <section class="unavailable-panel"><span class="unavailable-mark" aria-hidden="true">—</span><div><h2>Not available through the current API</h2><p>The TRACEE API does not expose findings or report-generation endpoints. No findings or reports are shown.</p></div></section>
+          </section>
+
+          <footer class="app-footer"><span>TRACEE LOCAL INVESTIGATION WORKSPACE</span><span>API status is shown above</span></footer>
+        </div>
+      </main>
+    </div>
+
+    <dialog class="upload-dialog" id="upload-dialog" aria-labelledby="upload-title">
+      <form id="upload-form" novalidate>
+        <div class="upload-dialog-heading"><div><div class="eyebrow">CONTROLLED ACQUISITION</div><h2 id="upload-title">Add Evidence</h2><p>Upload one local file into the configured evidence vault.</p></div><span class="upload-local-label">LOCAL API</span></div>
+        <label class="field-label" for="upload-file">Evidence file</label>
+        <input id="upload-file" class="file-input" type="file" required>
+        <p class="form-help" id="upload-selection">Choose a file from this device. A server-side path cannot be submitted.</p>
+        <p class="form-help">Upload uses the current in-memory API session credential. The server must configure <code>TRACEE_UPLOAD_TOKEN</code> to the same value as <code>TRACEE_API_TOKEN</code>. This shared credential does not identify an individual investigator.</p>
+        <div id="upload-alert" class="alert hidden" role="alert"></div>
+        <p id="upload-status" class="upload-status" role="status" aria-live="polite"></p>
+        <div id="upload-result" class="upload-result" hidden></div>
+        <button class="button button-secondary upload-verify" id="upload-verify-button" type="button" hidden>Verify uploaded evidence</button>
+        <div id="upload-verification-result" class="upload-verification-result" aria-live="polite"></div>
+        <div class="upload-actions"><button class="button button-secondary" id="upload-cancel-button" type="button">Cancel</button><button class="button button-primary" id="upload-submit-button" type="submit">Upload evidence</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="upload-dialog auth-dialog" id="api-auth-dialog" aria-labelledby="api-auth-title">
+      <form id="api-auth-form" novalidate>
+        <div class="upload-dialog-heading"><div><div class="eyebrow">LOCAL API ACCESS</div><h2 id="api-auth-title">Authorize this page</h2><p>Enter the shared bearer credential configured by the API operator.</p></div><span class="upload-local-label">MEMORY ONLY</span></div>
+        <label class="field-label" for="api-token">API bearer credential</label>
+        <input id="api-token" class="token-input" type="password" autocomplete="off" spellcheck="false" inputmode="text" aria-describedby="api-token-help" required>
+        <p class="form-help" id="api-token-help">The credential stays in this page's memory and is cleared when you lock the session or close the page. It is not an individual investigator identity.</p>
+        <div id="api-auth-alert" class="alert hidden" role="alert"></div>
+        <div class="upload-actions"><button class="button button-secondary" id="api-auth-cancel" type="button">Cancel</button><button class="button button-primary" id="api-auth-submit" type="submit">Authorize</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>

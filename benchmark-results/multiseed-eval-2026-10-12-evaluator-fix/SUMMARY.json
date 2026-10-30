@@ -1,0 +1,856 @@
+{
+  "seeds": [
+    101,
+    211,
+    307,
+    401,
+    503
+  ],
+  "reports_directory": "benchmark-results/multiseed-eval-2026-10-12-evaluator-fix",
+  "methods": {
+    "chronology_only": {
+      "candidate_matching": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 211,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 307,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 401,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 503,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 0.5,
+            "min": 0.5,
+            "max": 0.5,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 150,
+          "false_positives": 0,
+          "false_negatives": 150,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      },
+      "definitive_prediction_detection": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 211,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 307,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 401,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 503,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 0.5,
+            "min": 0.5,
+            "max": 0.5,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 150,
+          "false_positives": 0,
+          "false_negatives": 150,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      },
+      "interpretation_state_scoring": {
+        "pooled": {
+          "evaluated": 150,
+          "correct": 150,
+          "incorrect": 0,
+          "unmatched_ground_truth": 150,
+          "unscored_ground_truth": 50,
+          "accuracy": 1.0
+        },
+        "per_seed": [
+          {
+            "seed": 101,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 211,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 307,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 401,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 503,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          }
+        ],
+        "prediction_state_counts": {
+          "observed": 250
+        }
+      },
+      "family_candidate_matching_pooled": {
+        "ambiguous_evidence": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "complete_records": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "conflicting_timestamps": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "logging_disabled": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "missing_record": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "multiple_entities": {
+          "true_positives": 100,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "negative_control": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        }
+      }
+    },
+    "rule_correlation": {
+      "candidate_matching": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 211,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 307,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 401,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 503,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 0.5,
+            "min": 0.5,
+            "max": 0.5,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 150,
+          "false_positives": 0,
+          "false_negatives": 150,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      },
+      "definitive_prediction_detection": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 211,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 307,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 401,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 503,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 0.5,
+            "min": 0.5,
+            "max": 0.5,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 150,
+          "false_positives": 0,
+          "false_negatives": 150,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      },
+      "interpretation_state_scoring": {
+        "pooled": {
+          "evaluated": 150,
+          "correct": 150,
+          "incorrect": 0,
+          "unmatched_ground_truth": 150,
+          "unscored_ground_truth": 50,
+          "accuracy": 1.0
+        },
+        "per_seed": [
+          {
+            "seed": 101,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 211,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 307,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 401,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 503,
+            "evaluated": 30,
+            "correct": 30,
+            "incorrect": 0,
+            "unmatched_ground_truth": 30,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          }
+        ],
+        "prediction_state_counts": {
+          "observed": 200,
+          "rule_correlated": 50
+        }
+      },
+      "family_candidate_matching_pooled": {
+        "ambiguous_evidence": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "complete_records": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "conflicting_timestamps": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "logging_disabled": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "missing_record": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 50,
+          "precision": null,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "multiple_entities": {
+          "true_positives": 100,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "negative_control": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        }
+      }
+    },
+    "tracee": {
+      "candidate_matching": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 60,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          {
+            "seed": 211,
+            "true_positives": 60,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          {
+            "seed": 307,
+            "true_positives": 60,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          {
+            "seed": 401,
+            "true_positives": 60,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          {
+            "seed": 503,
+            "true_positives": 60,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 300,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "definitive_prediction_detection": {
+        "per_seed": [
+          {
+            "seed": 101,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 211,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 307,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 401,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          {
+            "seed": 503,
+            "true_positives": 30,
+            "false_positives": 0,
+            "false_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          }
+        ],
+        "seed_variation": {
+          "precision": {
+            "mean": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "recall": {
+            "mean": 0.5,
+            "min": 0.5,
+            "max": 0.5,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          },
+          "f1": {
+            "mean": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666,
+            "population_stddev": 0.0,
+            "valid_seed_count": 5
+          }
+        },
+        "pooled": {
+          "true_positives": 150,
+          "false_positives": 0,
+          "false_negatives": 150,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      },
+      "interpretation_state_scoring": {
+        "pooled": {
+          "evaluated": 300,
+          "correct": 300,
+          "incorrect": 0,
+          "unmatched_ground_truth": 0,
+          "unscored_ground_truth": 50,
+          "accuracy": 1.0
+        },
+        "per_seed": [
+          {
+            "seed": 101,
+            "evaluated": 60,
+            "correct": 60,
+            "incorrect": 0,
+            "unmatched_ground_truth": 0,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 211,
+            "evaluated": 60,
+            "correct": 60,
+            "incorrect": 0,
+            "unmatched_ground_truth": 0,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 307,
+            "evaluated": 60,
+            "correct": 60,
+            "incorrect": 0,
+            "unmatched_ground_truth": 0,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 401,
+            "evaluated": 60,
+            "correct": 60,
+            "incorrect": 0,
+            "unmatched_ground_truth": 0,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          },
+          {
+            "seed": 503,
+            "evaluated": 60,
+            "correct": 60,
+            "incorrect": 0,
+            "unmatched_ground_truth": 0,
+            "unscored_ground_truth": 10,
+            "accuracy": 1.0
+          }
+        ],
+        "prediction_state_counts": {
+          "challenged": 50,
+          "corroborated": 250,
+          "underdetermined": 100
+        }
+      },
+      "family_candidate_matching_pooled": {
+        "ambiguous_evidence": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "complete_records": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "conflicting_timestamps": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "logging_disabled": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "missing_record": {
+          "true_positives": 50,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "multiple_entities": {
+          "true_positives": 100,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "negative_control": {
+          "true_positives": 0,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null
+        }
+      }
+    }
+  },
+  "interpretation": "Results measure performance on the generated benchmark; they do not establish real-world accuracy or generalizability."
+}

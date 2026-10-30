@@ -1,0 +1,16 @@
+# Sample Project Context (Illustrative Only)
+- **Project/task ID:** SOC-DEMO-EXAMPLE
+- **Date:** 2026-10-25 (illustrative)
+- **Objective:** Fixture-backed alert-to-incident flow.
+- **Deliverables:** Local demo, report and clean archive.
+- **Rubric/time:** Replace with real published criteria.
+- **Repository/stack evidence:** Not supplied; inspect actual files before naming a stack.
+- **Scope:** Synthetic local fixtures only; no external testing.
+- **Primary skill:** `core/challenge-intake` until brief/rubric are reviewed.
+- **Possible supports:** SOC, backend, UX and testing only if triggered.
+- **Facts:** This demonstrates format, not a real implementation.
+- **Assumptions:** None imply an environment is available.
+- **Acceptance:** One fixture event is normalized and rendered once with visible source label.
+- **Completed work / verification:** None claimed or run.
+- **Limitations:** No code, telemetry or measured detection results in this example.
+- **Next action:** Inspect actual brief and repository.

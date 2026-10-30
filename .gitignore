@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Runtime logs
+logs/
+*.log
+
+# Generated forensic evidence
+evidence/*
+!evidence/reference/
+
+# Investigation output
+investigations/
+
+# Evidence vault
+vault/
+
+# Quarantine
+quarantine/
+
+# Generated runtime files
+*.jsonl
+*.tmp
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Local environment/configuration
+.env
+.env.*
+
+# Project backups
+src_v1_4_backup/
+tracee_v1_4_backup
+
+# Legacy development files
+src/tracee_v01.py
+src/verify_integrity.py
+
+# Generated test artifacts
+tests/tamper_demo/
+
+# SDD worktrees
+.worktrees/
+

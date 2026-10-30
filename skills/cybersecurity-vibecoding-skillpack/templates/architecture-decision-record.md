@@ -1,0 +1,12 @@
+# Architecture Decision Record
+- **ADR ID/title:**
+- **Status:** Proposed / Accepted / Superseded
+- **Date:**
+- **Context and requirement:**
+- **Evidence/constraints:**
+- **Options considered:**
+- **Decision and rationale:**
+- **Security/privacy implications:**
+- **Operational/testing implications:**
+- **Trade-offs and limitations:**
+- **Revisit trigger:**
