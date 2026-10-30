@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -234,1122 +235,1119 @@
 
 <body>
 
-<header>
-    <h1>TRACEE Investigator</h1>
-    <p>Threat Reconstruction &amp; Cyber Evidence Engine</p>
-</header>
+    <header>
+        <h1>TRACEE Investigator</h1>
+        <p>Threat Reconstruction &amp; Cyber Evidence Engine</p>
+    </header>
 
-<main>
+    <main>
 
-    <div class="toolbar">
-        <select id="caseSelector">
-            <option value="">Select investigation</option>
-        </select>
+        <div class="toolbar">
+            <select id="caseSelector">
+                <option value="">Select investigation</option>
+            </select>
 
-        <button id="refreshButton">
-            Refresh
-        </button>
-    </div>
-
-    <div id="status" class="status">
-        Select an investigation.
-    </div>
-
-    <div class="cards">
-
-        <div class="card">
-            <div class="card-label">
-                Investigation
-            </div>
-
-            <div id="caseStatus" class="card-value">
-                -
-            </div>
+            <button id="refreshButton">
+                Refresh
+            </button>
         </div>
 
-        <div class="card">
-            <div class="card-label">
+        <div id="status" class="status">
+            Select an investigation.
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-label">
+                    Investigation
+                </div>
+
+                <div id="caseStatus" class="card-value">
+                    -
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">
+                    Evidence
+                </div>
+
+                <div id="evidenceCount" class="card-value">
+                    -
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">
+                    Events
+                </div>
+
+                <div id="eventCount" class="card-value">
+                    -
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">
+                    Correlations
+                </div>
+
+                <div id="correlationCount" class="card-value">
+                    -
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">
+                    Graph nodes
+                </div>
+
+                <div id="nodeCount" class="card-value">
+                    -
+                </div>
+            </div>
+
+        </div>
+
+        <section class="panel">
+
+            <div class="panel-header">
                 Evidence
             </div>
 
-            <div id="evidenceCount" class="card-value">
-                -
-            </div>
-        </div>
+            <div class="panel-content">
 
-        <div class="card">
-            <div class="card-label">
-                Events
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Evidence ID</th>
+                            <th>Source</th>
+                            <th>SHA-256</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="evidenceTable">
+                    </tbody>
+
+                </table>
+
             </div>
 
-            <div id="eventCount" class="card-value">
-                -
-            </div>
-        </div>
+        </section>
 
-        <div class="card">
-            <div class="card-label">
+        <section class="panel">
+
+            <div class="panel-header">
+                Event Timeline
+            </div>
+
+            <div class="panel-content">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Event</th>
+                            <th>Evidence</th>
+                            <th>Source</th>
+                            <th>Line</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="timelineTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
                 Correlations
             </div>
 
-            <div id="correlationCount" class="card-value">
-                -
-            </div>
-        </div>
+            <div class="panel-content">
 
-        <div class="card">
-            <div class="card-label">
-                Graph nodes
-            </div>
+                <table>
 
-            <div id="nodeCount" class="card-value">
-                -
-            </div>
-        </div>
+                    <thead>
+                        <tr>
+                            <th>Correlation</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Evidence</th>
+                            <th>Shared Entities</th>
+                        </tr>
+                    </thead>
 
-    </div>
+                    <tbody id="correlationTable">
+                    </tbody>
 
-    <section class="panel">
-
-        <div class="panel-header">
-            Evidence
-        </div>
-
-        <div class="panel-content">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Evidence ID</th>
-                        <th>Source</th>
-                        <th>SHA-256</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody id="evidenceTable">
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <section class="panel">
-
-        <div class="panel-header">
-            Event Timeline
-        </div>
-
-        <div class="panel-content">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Event</th>
-                        <th>Evidence</th>
-                        <th>Source</th>
-                        <th>Line</th>
-                    </tr>
-                </thead>
-
-                <tbody id="timelineTable">
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <section class="panel">
-
-        <div class="panel-header">
-            Correlations
-        </div>
-
-        <div class="panel-content">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Correlation</th>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Evidence</th>
-                        <th>Shared Entities</th>
-                    </tr>
-                </thead>
-
-                <tbody id="correlationTable">
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <section class="panel">
-
-        <div class="panel-header">
-            Investigation Graph
-        </div>
-
-        <div class="panel-content">
-
-            <div class="graph-toolbar">
-
-                <button id="zoomIn">
-                    Zoom In
-                </button>
-
-                <button id="zoomOut">
-                    Zoom Out
-                </button>
-
-                <button id="resetGraph">
-                    Reset
-                </button>
+                </table>
 
             </div>
 
-            <div class="graph-layout">
+        </section>
 
-                <div class="graph-container">
-                    <svg
-                        id="graphSvg"
-                        viewBox="0 0 1100 650"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                    </svg>
+        <section class="panel">
+
+            <div class="panel-header">
+                Investigation Graph
+            </div>
+
+            <div class="panel-content">
+
+                <div class="graph-toolbar">
+
+                    <button id="zoomIn">
+                        Zoom In
+                    </button>
+
+                    <button id="zoomOut">
+                        Zoom Out
+                    </button>
+
+                    <button id="resetGraph">
+                        Reset
+                    </button>
+
                 </div>
 
-                <div class="graph-details">
+                <div class="graph-layout">
 
-                    <h3>
-                        Node details
-                    </h3>
+                    <div class="graph-container">
+                        <svg id="graphSvg" viewBox="0 0 1100 650" xmlns="http://www.w3.org/2000/svg">
+                        </svg>
+                    </div>
 
-                    <pre id="graphDetails">
+                    <div class="graph-details">
+
+                        <h3>
+                            Node details
+                        </h3>
+
+                        <pre id="graphDetails">
 Select a graph node.
                     </pre>
 
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
+    </main>
 
-</main>
+    <script>
 
-<script>
+        const API_BASE = "";
 
-const API_BASE = "";
+        const caseSelector =
+            document.getElementById("caseSelector");
 
-const caseSelector =
-    document.getElementById("caseSelector");
+        const statusBox =
+            document.getElementById("status");
 
-const statusBox =
-    document.getElementById("status");
+        const refreshButton =
+            document.getElementById("refreshButton");
 
-const refreshButton =
-    document.getElementById("refreshButton");
+        const graphSvg =
+            document.getElementById("graphSvg");
 
-const graphSvg =
-    document.getElementById("graphSvg");
+        const graphDetails =
+            document.getElementById("graphDetails");
 
-const graphDetails =
-    document.getElementById("graphDetails");
+        let currentGraph = null;
+        let currentGraphScale = 1;
 
-let currentGraph = null;
-let currentGraphScale = 1;
 
+        async function api(path) {
 
-async function api(path) {
+            const response =
+                await fetch(API_BASE + path);
 
-    const response =
-        await fetch(API_BASE + path);
+            if (!response.ok) {
 
-    if (!response.ok) {
+                throw new Error(
+                    `API request failed: ${response.status}`
+                );
+            }
 
-        throw new Error(
-            `API request failed: ${response.status}`
-        );
-    }
-
-    return response.json();
-}
-
-
-function clearElement(id) {
-
-    document.getElementById(id)
-        .innerHTML = "";
-}
-
-
-function addCell(
-    row,
-    value,
-    className = ""
-) {
-
-    const cell =
-        document.createElement("td");
-
-    cell.textContent =
-        value ?? "";
-
-    if (className) {
-        cell.className =
-            className;
-    }
-
-    row.appendChild(cell);
-
-    return cell;
-}
-
-
-async function loadCases() {
-
-    const data =
-        await api(
-            "/investigations"
-        );
-
-    const previous =
-        caseSelector.value;
-
-    caseSelector.innerHTML =
-        '<option value="">Select investigation</option>';
-
-    for (
-        const investigation
-        of data.investigations
-    ) {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            investigation.run_id;
-
-        option.textContent =
-            investigation.run_id;
-
-        caseSelector.appendChild(
-            option
-        );
-    }
-
-    if (previous) {
-        caseSelector.value =
-            previous;
-    }
-
-    if (!caseSelector.value) {
-
-        const first =
-            caseSelector.options[1];
-
-        if (first) {
-            caseSelector.value =
-                first.value;
-        }
-    }
-}
-
-
-async function loadInvestigation() {
-
-    const runId =
-        caseSelector.value;
-
-    if (!runId) {
-
-        statusBox.textContent =
-            "Select an investigation.";
-
-        return;
-    }
-
-    statusBox.textContent =
-        `Loading investigation ${runId}...`;
-
-    try {
-
-        const [
-            manifest,
-            events,
-            correlations,
-            timeline,
-            graph
-        ] = await Promise.all([
-
-            api(
-                `/investigations/${runId}`
-            ),
-
-            api(
-                `/investigations/${runId}/events`
-            ),
-
-            api(
-                `/investigations/${runId}/correlations`
-            ),
-
-            api(
-                `/investigations/${runId}/timeline`
-            ),
-
-            api(
-                `/investigations/${runId}/graph`
-            )
-
-        ]);
-
-        document.getElementById(
-            "caseStatus"
-        ).textContent =
-            manifest.status;
-
-        document.getElementById(
-            "evidenceCount"
-        ).textContent =
-            manifest.evidence?.length ?? 0;
-
-        document.getElementById(
-            "eventCount"
-        ).textContent =
-            events.count;
-
-        document.getElementById(
-            "correlationCount"
-        ).textContent =
-            correlations.count;
-
-        document.getElementById(
-            "nodeCount"
-        ).textContent =
-            graph.nodes?.length ?? 0;
-
-        renderEvidence(
-            manifest.evidence ?? []
-        );
-
-        renderTimeline(
-            timeline.timeline ?? []
-        );
-
-        renderCorrelations(
-            correlations.correlations ?? []
-        );
-
-        currentGraph =
-            graph;
-
-        renderGraph(
-            graph
-        );
-
-        statusBox.textContent =
-            `Loaded investigation ${runId}.`;
-
-    } catch (error) {
-
-        statusBox.textContent =
-            error.message;
-    }
-}
-
-
-function renderEvidence(items) {
-
-    const table =
-        document.getElementById(
-            "evidenceTable"
-        );
-
-    table.innerHTML = "";
-
-    if (!items.length) {
-
-        table.innerHTML =
-            '<tr><td colspan="4" class="empty">No evidence records.</td></tr>';
-
-        return;
-    }
-
-    for (const item of items) {
-
-        const row =
-            document.createElement("tr");
-
-        addCell(
-            row,
-            item.evidence_id,
-            "mono"
-        );
-
-        addCell(
-            row,
-            item.source
-        );
-
-        addCell(
-            row,
-            item.sha256,
-            "mono"
-        );
-
-        addCell(
-            row,
-            item.status
-        );
-
-        table.appendChild(row);
-    }
-}
-
-
-function renderTimeline(items) {
-
-    const table =
-        document.getElementById(
-            "timelineTable"
-        );
-
-    table.innerHTML = "";
-
-    const events = [];
-
-    for (const incident of items) {
-
-        for (const event of (
-            incident.events || []
-        )) {
-
-            events.push({
-                ...event,
-                correlation_id:
-                    incident.correlation_id
-            });
-        }
-    }
-
-    events.sort(
-        (a, b) =>
-            String(a.timestamp)
-                .localeCompare(
-                    String(b.timestamp)
-                )
-    );
-
-    if (!events.length) {
-
-        table.innerHTML =
-            '<tr><td colspan="5" class="empty">No timeline events.</td></tr>';
-
-        return;
-    }
-
-    for (const event of events) {
-
-        const row =
-            document.createElement("tr");
-
-        addCell(
-            row,
-            event.timestamp
-        );
-
-        addCell(
-            row,
-            event.event_type
-        );
-
-        addCell(
-            row,
-            event.evidence_id,
-            "mono"
-        );
-
-        addCell(
-            row,
-            event.source
-        );
-
-        addCell(
-            row,
-            event.line_number
-        );
-
-        table.appendChild(row);
-    }
-}
-
-
-function renderCorrelations(items) {
-
-    const table =
-        document.getElementById(
-            "correlationTable"
-        );
-
-    table.innerHTML = "";
-
-    if (!items.length) {
-
-        table.innerHTML =
-            '<tr><td colspan="5" class="empty">No correlations identified.</td></tr>';
-
-        return;
-    }
-
-    for (const correlation of items) {
-
-        const row =
-            document.createElement("tr");
-
-        addCell(
-            row,
-            correlation.correlation_id,
-            "mono"
-        );
-
-        addCell(
-            row,
-            correlation.start_time
-        );
-
-        addCell(
-            row,
-            correlation.end_time
-        );
-
-        addCell(
-            row,
-            (
-                correlation.evidence_ids || []
-            ).join(", "),
-            "mono"
-        );
-
-        addCell(
-            row,
-            (
-                correlation.shared_entities || []
-            ).map(
-                entity =>
-                    `${entity.type}:${entity.value}`
-            ).join(", ")
-        );
-
-        table.appendChild(row);
-    }
-}
-
-
-function nodePosition(
-    node,
-    index,
-    total
-) {
-
-    const columns = 4;
-
-    const column =
-        index % columns;
-
-    const row =
-        Math.floor(index / columns);
-
-    const x =
-        140 + column * 270;
-
-    const y =
-        100 + row * 150;
-
-    return {
-        x,
-        y
-    };
-}
-
-
-function getNodeColor(type) {
-
-    const colors = {
-        USER: "#6fa8dc",
-        IP: "#93c47d",
-        PROCESS: "#f6b26b",
-        FILE: "#c27ba0",
-        DOMAIN: "#8e7cc3",
-        DEVICE: "#76a5af",
-        EVENT: "#cccccc"
-    };
-
-    return colors[type] || "#b7b7b7";
-}
-
-
-function renderGraph(graph) {
-
-    graphSvg.innerHTML = "";
-
-    if (!graph || !graph.nodes) {
-
-        graphDetails.textContent =
-            "No graph data.";
-
-        return;
-    }
-
-    const positions =
-        new Map();
-
-    graph.nodes.forEach(
-        (node, index) => {
-
-            positions.set(
-                node.id,
-                nodePosition(
-                    node,
-                    index,
-                    graph.nodes.length
-                )
-            );
-        }
-    );
-
-    const group =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "g"
-        );
-
-    group.setAttribute(
-        "transform",
-        `scale(${currentGraphScale})`
-    );
-
-    const defs =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "defs"
-        );
-
-    const marker =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "marker"
-        );
-
-    marker.setAttribute(
-        "id",
-        "arrow"
-    );
-
-    marker.setAttribute(
-        "markerWidth",
-        "8"
-    );
-
-    marker.setAttribute(
-        "markerHeight",
-        "8"
-    );
-
-    marker.setAttribute(
-        "refX",
-        "7"
-    );
-
-    marker.setAttribute(
-        "refY",
-        "3"
-    );
-
-    marker.setAttribute(
-        "orient",
-        "auto"
-    );
-
-    const path =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
-
-    path.setAttribute(
-        "d",
-        "M0,0 L0,6 L7,3 z"
-    );
-
-    path.setAttribute(
-        "fill",
-        "#758391"
-    );
-
-    marker.appendChild(path);
-    defs.appendChild(marker);
-    graphSvg.appendChild(defs);
-
-    for (const edge of graph.edges || []) {
-
-        const source =
-            positions.get(edge.source);
-
-        const target =
-            positions.get(edge.target);
-
-        if (!source || !target) {
-            continue;
+            return response.json();
         }
 
-        const line =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "line"
+
+        function clearElement(id) {
+
+            document.getElementById(id)
+                .innerHTML = "";
+        }
+
+
+        function addCell(
+            row,
+            value,
+            className = ""
+        ) {
+
+            const cell =
+                document.createElement("td");
+
+            cell.textContent =
+                value ?? "";
+
+            if (className) {
+                cell.className =
+                    className;
+            }
+
+            row.appendChild(cell);
+
+            return cell;
+        }
+
+
+        async function loadCases() {
+
+            const data =
+                await api(
+                    "/investigations"
+                );
+
+            const previous =
+                caseSelector.value;
+
+            caseSelector.innerHTML =
+                '<option value="">Select investigation</option>';
+
+            for (
+                const investigation
+                of data.investigations
+            ) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    investigation.run_id;
+
+                option.textContent =
+                    investigation.run_id;
+
+                caseSelector.appendChild(
+                    option
+                );
+            }
+
+            if (previous) {
+                caseSelector.value =
+                    previous;
+            }
+
+            if (!caseSelector.value) {
+
+                const first =
+                    caseSelector.options[1];
+
+                if (first) {
+                    caseSelector.value =
+                        first.value;
+                }
+            }
+        }
+
+
+        async function loadInvestigation() {
+
+            const runId =
+                caseSelector.value;
+
+            if (!runId) {
+
+                statusBox.textContent =
+                    "Select an investigation.";
+
+                return;
+            }
+
+            statusBox.textContent =
+                `Loading investigation ${runId}...`;
+
+            try {
+
+                const [
+                    manifest,
+                    events,
+                    correlations,
+                    timeline,
+                    graph
+                ] = await Promise.all([
+
+                    api(
+                        `/investigations/${runId}`
+                    ),
+
+                    api(
+                        `/investigations/${runId}/events`
+                    ),
+
+                    api(
+                        `/investigations/${runId}/correlations`
+                    ),
+
+                    api(
+                        `/investigations/${runId}/timeline`
+                    ),
+
+                    api(
+                        `/investigations/${runId}/graph`
+                    )
+
+                ]);
+
+                document.getElementById(
+                    "caseStatus"
+                ).textContent =
+                    manifest.status;
+
+                document.getElementById(
+                    "evidenceCount"
+                ).textContent =
+                    manifest.evidence?.length ?? 0;
+
+                document.getElementById(
+                    "eventCount"
+                ).textContent =
+                    events.count;
+
+                document.getElementById(
+                    "correlationCount"
+                ).textContent =
+                    correlations.count;
+
+                document.getElementById(
+                    "nodeCount"
+                ).textContent =
+                    graph.nodes?.length ?? 0;
+
+                renderEvidence(
+                    manifest.evidence ?? []
+                );
+
+                renderTimeline(
+                    timeline.timeline ?? []
+                );
+
+                renderCorrelations(
+                    correlations.correlations ?? []
+                );
+
+                currentGraph =
+                    graph;
+
+                renderGraph(
+                    graph
+                );
+
+                statusBox.textContent =
+                    `Loaded investigation ${runId}.`;
+
+            } catch (error) {
+
+                statusBox.textContent =
+                    error.message;
+            }
+        }
+
+
+        function renderEvidence(items) {
+
+            const table =
+                document.getElementById(
+                    "evidenceTable"
+                );
+
+            table.innerHTML = "";
+
+            if (!items.length) {
+
+                table.innerHTML =
+                    '<tr><td colspan="4" class="empty">No evidence records.</td></tr>';
+
+                return;
+            }
+
+            for (const item of items) {
+
+                const row =
+                    document.createElement("tr");
+
+                addCell(
+                    row,
+                    item.evidence_id,
+                    "mono"
+                );
+
+                addCell(
+                    row,
+                    item.source
+                );
+
+                addCell(
+                    row,
+                    item.sha256,
+                    "mono"
+                );
+
+                addCell(
+                    row,
+                    item.status
+                );
+
+                table.appendChild(row);
+            }
+        }
+
+
+        function renderTimeline(items) {
+
+            const table =
+                document.getElementById(
+                    "timelineTable"
+                );
+
+            table.innerHTML = "";
+
+            const events = [];
+
+            for (const incident of items) {
+
+                for (const event of (
+                    incident.events || []
+                )) {
+
+                    events.push({
+                        ...event,
+                        correlation_id:
+                            incident.correlation_id
+                    });
+                }
+            }
+
+            events.sort(
+                (a, b) =>
+                    String(a.timestamp)
+                        .localeCompare(
+                            String(b.timestamp)
+                        )
             );
 
-        line.setAttribute(
-            "x1",
-            source.x
-        );
+            if (!events.length) {
 
-        line.setAttribute(
-            "y1",
-            source.y
-        );
+                table.innerHTML =
+                    '<tr><td colspan="5" class="empty">No timeline events.</td></tr>';
 
-        line.setAttribute(
-            "x2",
-            target.x
-        );
+                return;
+            }
 
-        line.setAttribute(
-            "y2",
-            target.y
-        );
+            for (const event of events) {
 
-        line.setAttribute(
-            "stroke",
-            "#596673"
-        );
+                const row =
+                    document.createElement("tr");
 
-        line.setAttribute(
-            "stroke-width",
-            "1.5"
-        );
+                addCell(
+                    row,
+                    event.timestamp
+                );
 
-        line.setAttribute(
-            "marker-end",
-            "url(#arrow)"
-        );
+                addCell(
+                    row,
+                    event.event_type
+                );
 
-        group.appendChild(line);
+                addCell(
+                    row,
+                    event.evidence_id,
+                    "mono"
+                );
 
-        const text =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "text"
-            );
+                addCell(
+                    row,
+                    event.source
+                );
 
-        text.setAttribute(
-            "x",
-            (
-                source.x
-                + target.x
-            ) / 2
-        );
+                addCell(
+                    row,
+                    event.line_number
+                );
 
-        text.setAttribute(
-            "y",
-            (
-                source.y
-                + target.y
-            ) / 2
-            - 6
-        );
+                table.appendChild(row);
+            }
+        }
 
-        text.setAttribute(
-            "fill",
-            "#8a98a6"
-        );
 
-        text.setAttribute(
-            "font-size",
-            "11"
-        );
+        function renderCorrelations(items) {
 
-        text.setAttribute(
-            "text-anchor",
-            "middle"
-        );
+            const table =
+                document.getElementById(
+                    "correlationTable"
+                );
 
-        text.textContent =
-            edge.relationship;
+            table.innerHTML = "";
 
-        group.appendChild(text);
-    }
+            if (!items.length) {
 
-    for (const node of graph.nodes) {
+                table.innerHTML =
+                    '<tr><td colspan="5" class="empty">No correlations identified.</td></tr>';
 
-        const position =
-            positions.get(node.id);
+                return;
+            }
 
-        const nodeGroup =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "g"
-            );
+            for (const correlation of items) {
 
-        nodeGroup.style.cursor =
-            "pointer";
+                const row =
+                    document.createElement("tr");
 
-        const circle =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "circle"
-            );
+                addCell(
+                    row,
+                    correlation.correlation_id,
+                    "mono"
+                );
 
-        circle.setAttribute(
-            "cx",
-            position.x
-        );
+                addCell(
+                    row,
+                    correlation.start_time
+                );
 
-        circle.setAttribute(
-            "cy",
-            position.y
-        );
+                addCell(
+                    row,
+                    correlation.end_time
+                );
 
-        circle.setAttribute(
-            "r",
-            node.type === "EVENT"
-                ? "26"
-                : "30"
-        );
+                addCell(
+                    row,
+                    (
+                        correlation.evidence_ids || []
+                    ).join(", "),
+                    "mono"
+                );
 
-        circle.setAttribute(
-            "fill",
-            "#131c24"
-        );
+                addCell(
+                    row,
+                    (
+                        correlation.shared_entities || []
+                    ).map(
+                        entity =>
+                            `${entity.type}:${entity.value}`
+                    ).join(", ")
+                );
 
-        circle.setAttribute(
-            "stroke",
-            getNodeColor(node.type)
-        );
+                table.appendChild(row);
+            }
+        }
 
-        circle.setAttribute(
-            "stroke-width",
-            "2"
-        );
 
-        nodeGroup.appendChild(circle);
+        function nodePosition(
+            node,
+            index,
+            total
+        ) {
 
-        const typeText =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "text"
-            );
+            const columns = 4;
 
-        typeText.setAttribute(
-            "x",
-            position.x
-        );
+            const column =
+                index % columns;
 
-        typeText.setAttribute(
-            "y",
-            position.y - 4
-        );
+            const row =
+                Math.floor(index / columns);
 
-        typeText.setAttribute(
-            "fill",
-            getNodeColor(node.type)
-        );
+            const x =
+                140 + column * 270;
 
-        typeText.setAttribute(
-            "font-size",
-            "10"
-        );
+            const y =
+                100 + row * 150;
 
-        typeText.setAttribute(
-            "font-weight",
-            "600"
-        );
+            return {
+                x,
+                y
+            };
+        }
 
-        typeText.setAttribute(
-            "text-anchor",
-            "middle"
-        );
 
-        typeText.textContent =
-            node.type;
+        function getNodeColor(type) {
 
-        nodeGroup.appendChild(
-            typeText
-        );
+            const colors = {
+                USER: "#6fa8dc",
+                IP: "#93c47d",
+                PROCESS: "#f6b26b",
+                FILE: "#c27ba0",
+                DOMAIN: "#8e7cc3",
+                DEVICE: "#76a5af",
+                EVENT: "#cccccc"
+            };
 
-        const valueText =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "text"
-            );
+            return colors[type] || "#b7b7b7";
+        }
 
-        valueText.setAttribute(
-            "x",
-            position.x
-        );
 
-        valueText.setAttribute(
-            "y",
-            position.y + 11
-        );
+        function renderGraph(graph) {
 
-        valueText.setAttribute(
-            "fill",
-            "#dbe4ec"
-        );
+            graphSvg.innerHTML = "";
 
-        valueText.setAttribute(
-            "font-size",
-            "11"
-        );
-
-        valueText.setAttribute(
-            "text-anchor",
-            "middle"
-        );
-
-        const value =
-            String(node.value);
-
-        valueText.textContent =
-            value.length > 18
-                ? value.slice(0, 18) + "..."
-                : value;
-
-        nodeGroup.appendChild(
-            valueText
-        );
-
-        nodeGroup.addEventListener(
-            "click",
-            () => {
+            if (!graph || !graph.nodes) {
 
                 graphDetails.textContent =
-                    JSON.stringify(
-                        node,
-                        null,
-                        2
+                    "No graph data.";
+
+                return;
+            }
+
+            const positions =
+                new Map();
+
+            graph.nodes.forEach(
+                (node, index) => {
+
+                    positions.set(
+                        node.id,
+                        nodePosition(
+                            node,
+                            index,
+                            graph.nodes.length
+                        )
                     );
+                }
+            );
+
+            const group =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "g"
+                );
+
+            group.setAttribute(
+                "transform",
+                `scale(${currentGraphScale})`
+            );
+
+            const defs =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "defs"
+                );
+
+            const marker =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "marker"
+                );
+
+            marker.setAttribute(
+                "id",
+                "arrow"
+            );
+
+            marker.setAttribute(
+                "markerWidth",
+                "8"
+            );
+
+            marker.setAttribute(
+                "markerHeight",
+                "8"
+            );
+
+            marker.setAttribute(
+                "refX",
+                "7"
+            );
+
+            marker.setAttribute(
+                "refY",
+                "3"
+            );
+
+            marker.setAttribute(
+                "orient",
+                "auto"
+            );
+
+            const path =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "path"
+                );
+
+            path.setAttribute(
+                "d",
+                "M0,0 L0,6 L7,3 z"
+            );
+
+            path.setAttribute(
+                "fill",
+                "#758391"
+            );
+
+            marker.appendChild(path);
+            defs.appendChild(marker);
+            graphSvg.appendChild(defs);
+
+            for (const edge of graph.edges || []) {
+
+                const source =
+                    positions.get(edge.source);
+
+                const target =
+                    positions.get(edge.target);
+
+                if (!source || !target) {
+                    continue;
+                }
+
+                const line =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "line"
+                    );
+
+                line.setAttribute(
+                    "x1",
+                    source.x
+                );
+
+                line.setAttribute(
+                    "y1",
+                    source.y
+                );
+
+                line.setAttribute(
+                    "x2",
+                    target.x
+                );
+
+                line.setAttribute(
+                    "y2",
+                    target.y
+                );
+
+                line.setAttribute(
+                    "stroke",
+                    "#596673"
+                );
+
+                line.setAttribute(
+                    "stroke-width",
+                    "1.5"
+                );
+
+                line.setAttribute(
+                    "marker-end",
+                    "url(#arrow)"
+                );
+
+                group.appendChild(line);
+
+                const text =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "text"
+                    );
+
+                text.setAttribute(
+                    "x",
+                    (
+                        source.x
+                        + target.x
+                    ) / 2
+                );
+
+                text.setAttribute(
+                    "y",
+                    (
+                        source.y
+                        + target.y
+                    ) / 2
+                    - 6
+                );
+
+                text.setAttribute(
+                    "fill",
+                    "#8a98a6"
+                );
+
+                text.setAttribute(
+                    "font-size",
+                    "11"
+                );
+
+                text.setAttribute(
+                    "text-anchor",
+                    "middle"
+                );
+
+                text.textContent =
+                    edge.relationship;
+
+                group.appendChild(text);
+            }
+
+            for (const node of graph.nodes) {
+
+                const position =
+                    positions.get(node.id);
+
+                const nodeGroup =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "g"
+                    );
+
+                nodeGroup.style.cursor =
+                    "pointer";
+
+                const circle =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "circle"
+                    );
+
+                circle.setAttribute(
+                    "cx",
+                    position.x
+                );
+
+                circle.setAttribute(
+                    "cy",
+                    position.y
+                );
+
+                circle.setAttribute(
+                    "r",
+                    node.type === "EVENT"
+                        ? "26"
+                        : "30"
+                );
+
+                circle.setAttribute(
+                    "fill",
+                    "#131c24"
+                );
+
+                circle.setAttribute(
+                    "stroke",
+                    getNodeColor(node.type)
+                );
+
+                circle.setAttribute(
+                    "stroke-width",
+                    "2"
+                );
+
+                nodeGroup.appendChild(circle);
+
+                const typeText =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "text"
+                    );
+
+                typeText.setAttribute(
+                    "x",
+                    position.x
+                );
+
+                typeText.setAttribute(
+                    "y",
+                    position.y - 4
+                );
+
+                typeText.setAttribute(
+                    "fill",
+                    getNodeColor(node.type)
+                );
+
+                typeText.setAttribute(
+                    "font-size",
+                    "10"
+                );
+
+                typeText.setAttribute(
+                    "font-weight",
+                    "600"
+                );
+
+                typeText.setAttribute(
+                    "text-anchor",
+                    "middle"
+                );
+
+                typeText.textContent =
+                    node.type;
+
+                nodeGroup.appendChild(
+                    typeText
+                );
+
+                const valueText =
+                    document.createElementNS(
+                        "http://www.w3.org/2000/svg",
+                        "text"
+                    );
+
+                valueText.setAttribute(
+                    "x",
+                    position.x
+                );
+
+                valueText.setAttribute(
+                    "y",
+                    position.y + 11
+                );
+
+                valueText.setAttribute(
+                    "fill",
+                    "#dbe4ec"
+                );
+
+                valueText.setAttribute(
+                    "font-size",
+                    "11"
+                );
+
+                valueText.setAttribute(
+                    "text-anchor",
+                    "middle"
+                );
+
+                const value =
+                    String(node.value);
+
+                valueText.textContent =
+                    value.length > 18
+                        ? value.slice(0, 18) + "..."
+                        : value;
+
+                nodeGroup.appendChild(
+                    valueText
+                );
+
+                nodeGroup.addEventListener(
+                    "click",
+                    () => {
+
+                        graphDetails.textContent =
+                            JSON.stringify(
+                                node,
+                                null,
+                                2
+                            );
+                    }
+                );
+
+                group.appendChild(
+                    nodeGroup
+                );
+            }
+
+            graphSvg.appendChild(group);
+        }
+
+
+        caseSelector.addEventListener(
+            "change",
+            loadInvestigation
+        );
+
+        refreshButton.addEventListener(
+            "click",
+            async () => {
+
+                await loadCases();
+                await loadInvestigation();
+
             }
         );
 
-        group.appendChild(
-            nodeGroup
+
+        document.getElementById(
+            "zoomIn"
+        ).addEventListener(
+            "click",
+            () => {
+
+                currentGraphScale *= 1.15;
+
+                if (currentGraph) {
+                    renderGraph(
+                        currentGraph
+                    );
+                }
+            }
         );
-    }
-
-    graphSvg.appendChild(group);
-}
 
 
-caseSelector.addEventListener(
-    "change",
-    loadInvestigation
-);
+        document.getElementById(
+            "zoomOut"
+        ).addEventListener(
+            "click",
+            () => {
 
-refreshButton.addEventListener(
-    "click",
-    async () => {
+                currentGraphScale /= 1.15;
 
-        await loadCases();
-        await loadInvestigation();
+                if (currentGraph) {
+                    renderGraph(
+                        currentGraph
+                    );
+                }
+            }
+        );
 
-    }
-);
+
+        document.getElementById(
+            "resetGraph"
+        ).addEventListener(
+            "click",
+            () => {
+
+                currentGraphScale = 1;
+
+                if (currentGraph) {
+                    renderGraph(
+                        currentGraph
+                    );
+                }
+            }
+        );
 
 
-document.getElementById(
-    "zoomIn"
-).addEventListener(
-    "click",
-    () => {
+        async function init() {
 
-        currentGraphScale *= 1.15;
+            try {
 
-        if (currentGraph) {
-            renderGraph(
-                currentGraph
-            );
+                await loadCases();
+                await loadInvestigation();
+
+            } catch (error) {
+
+                statusBox.textContent =
+                    error.message;
+            }
         }
-    }
-);
 
 
-document.getElementById(
-    "zoomOut"
-).addEventListener(
-    "click",
-    () => {
+        init();
 
-        currentGraphScale /= 1.15;
-
-        if (currentGraph) {
-            renderGraph(
-                currentGraph
-            );
-        }
-    }
-);
-
-
-document.getElementById(
-    "resetGraph"
-).addEventListener(
-    "click",
-    () => {
-
-        currentGraphScale = 1;
-
-        if (currentGraph) {
-            renderGraph(
-                currentGraph
-            );
-        }
-    }
-);
-
-
-async function init() {
-
-    try {
-
-        await loadCases();
-        await loadInvestigation();
-
-    } catch (error) {
-
-        statusBox.textContent =
-            error.message;
-    }
-}
-
-
-init();
-
-</script>
+    </script>
 
 </body>
+
 </html>
