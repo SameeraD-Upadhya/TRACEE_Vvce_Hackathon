@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000001",
+  "original_sha256": "62a4d7ed7a416f4260686334e0a70cbb61522f40e0a6dc436fb624fe53fe67c0",
+  "size_bytes": 456,
+  "recovery_path": "recovery\\objects\\sha256\\62\\62a4d7ed7a416f4260686334e0a70cbb61522f40e0a6dc436fb624fe53fe67c0\\evidence.bin",
+  "created_at": "2026-10-31T01:11:06.040455+00:00",
+  "status": "VERIFIED"
+}

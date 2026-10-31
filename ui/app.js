@@ -22,10 +22,12 @@ const byId = (id) => document.getElementById(id);
 const views = {
   dashboard: "Dashboard",
   evidence: "Evidence Explorer",
-  verification: "Integrity Verification",
+  verification: "Integrity & Recovery",
+  mtls: "Adaptive mTLS Lab",
+  replay: "Dataset Replay",
   activity: "Investigation Activity",
   analysis: "Event Analysis & Reconstruction",
-  timeline: "Timeline & Relationships",
+  timeline: "Timeline & Correlation",
   reports: "Findings & Reports",
 };
 
@@ -316,7 +318,14 @@ function showView(name) {
   history.replaceState(null, "", `#${name}`);
   if (name === "activity" && state.activityStatus === "idle") refreshActivity();
   if (name === "analysis") prepareAnalysisView();
-  if (name === "timeline") prepareTimelineView();
+  if (name === "timeline") {
+    prepareTimelineView();
+    loadInvestigationRisk();
+    loadCorrelationGraph();
+  }
+  if (name === "verification") loadRecoveryStatus();
+  if (name === "mtls") initMtlsView();
+  if (name === "replay") loadDatasetInfo();
 }
 
 function makeEvidenceRow(record, selected = false) {
@@ -503,6 +512,34 @@ function renderVerification(result, host = byId("verification-result")) {
     ? result.message
     : messages.UNRECOGNIZED;
   host.append(heading, element("p", "result-message", responseMessage));
+
+  if (result.diagnostics) {
+    host.append(element("div", "result-diagnostics", `Details: ${result.diagnostics}`));
+  }
+
+  // Surfacing restore action for tampered or missing evidence
+  if (resultState === "TAMPERED" || resultState === "MISSING") {
+    const restoreBtn = element("button", "button button-primary", "Restore Original from Recovery Vault");
+    restoreBtn.type = "button";
+    restoreBtn.style.marginTop = "14px";
+    restoreBtn.addEventListener("click", async () => {
+      restoreBtn.disabled = true;
+      restoreBtn.textContent = "Restoring from recovery copy…";
+      try {
+        const restResult = await apiPostJson(`/api/v1/recovery/${encodeURIComponent(result.evidence_id)}/restore`, {});
+        alert(`Evidence ${result.evidence_id} successfully restored from SHA-256 recovery store!
+Status: ${restResult.status}
+Re-verifying integrity…`);
+        await loadRecoveryStatus();
+        await runVerification();
+      } catch (err) {
+        alert(`Restoration failed: ${err.message}`);
+        restoreBtn.disabled = false;
+        restoreBtn.textContent = "Restore Original from Recovery Vault";
+      }
+    });
+    host.append(restoreBtn);
+  }
 }
 
 async function runVerification() {
@@ -540,7 +577,10 @@ function populateVerificationSelect() {
     select.append(option);
   });
   if (state.evidence.some((record) => record.evidence_id === previous)) select.value = previous;
-  byId("verify-button").disabled = !select.value;
+  const hasVal = Boolean(select.value);
+  byId("verify-button").disabled = !hasVal;
+  if (byId("simulate-tamper-btn")) byId("simulate-tamper-btn").disabled = !hasVal;
+  if (byId("simulate-missing-btn")) byId("simulate-missing-btn").disabled = !hasVal;
 }
 
 async function refreshData() {
@@ -1258,9 +1298,57 @@ byId("api-auth-dialog").addEventListener("cancel", () => { byId("api-token").val
 byId("api-auth-dialog").addEventListener("close", () => { byId("api-token").value = ""; });
 byId("evidence-search").addEventListener("input", renderExplorer);
 byId("verify-evidence-select").addEventListener("change", (event) => {
-  byId("verify-button").disabled = !event.target.value;
+  const hasVal = Boolean(event.target.value);
+  byId("verify-button").disabled = !hasVal;
+  if (byId("simulate-tamper-btn")) byId("simulate-tamper-btn").disabled = !hasVal;
+  if (byId("simulate-missing-btn")) byId("simulate-missing-btn").disabled = !hasVal;
+  if (hasVal) {
+    runVerification();
+  } else {
+    byId("verification-result").replaceChildren(
+      element("div", "verification-prompt", "Select an evidence record and run an integrity check.")
+    );
+  }
 });
 byId("verify-button").addEventListener("click", runVerification);
+
+if (byId("simulate-tamper-btn")) {
+  byId("simulate-tamper-btn").addEventListener("click", async () => {
+    const eid = byId("verify-evidence-select").value;
+    if (!eid) return;
+    const btn = byId("simulate-tamper-btn");
+    btn.disabled = true;
+    btn.querySelector("span").textContent = "Tampering…";
+    try {
+      await apiPostJson(`/api/v1/recovery/${encodeURIComponent(eid)}/simulate-tamper`, {});
+      await runVerification();
+    } catch (err) {
+      alert(`Simulation failed: ${err.message}`);
+    } finally {
+      btn.disabled = !byId("verify-evidence-select").value;
+      btn.querySelector("span").textContent = "⚡ Corrupt / Tamper";
+    }
+  });
+}
+
+if (byId("simulate-missing-btn")) {
+  byId("simulate-missing-btn").addEventListener("click", async () => {
+    const eid = byId("verify-evidence-select").value;
+    if (!eid) return;
+    const btn = byId("simulate-missing-btn");
+    btn.disabled = true;
+    btn.querySelector("span").textContent = "Deleting…";
+    try {
+      await apiPostJson(`/api/v1/recovery/${encodeURIComponent(eid)}/simulate-missing`, {});
+      await runVerification();
+    } catch (err) {
+      alert(`Simulation failed: ${err.message}`);
+    } finally {
+      btn.disabled = !byId("verify-evidence-select").value;
+      btn.querySelector("span").textContent = "⚡ Delete / Missing";
+    }
+  });
+}
 byId("add-evidence-button").addEventListener("click", openUploadDialog);
 byId("upload-file").addEventListener("change", (event) => {
   uploadFile = event.target.files?.[0] || null;
@@ -1317,3 +1405,673 @@ updateApiSessionButton();
 refreshData().then(() => {
   if (!apiAccessToken) openApiAuthDialog();
 });
+
+
+/* =========================================================================
+   HACKATHON EXTENSIONS: RECOVERY VAULT, MTLS LAB, DATASET REPLAY, INTELLIGENCE
+   ========================================================================= */
+
+// --- 1. RECOVERY VAULT ---
+async function loadRecoveryStatus() {
+  try {
+    const res = await apiGet("/api/v1/recovery/status");
+    if (byId("rec-copies-count")) byId("rec-copies-count").textContent = res.total_recovery_copies ?? 0;
+    if (byId("rec-valid-count")) byId("rec-valid-count").textContent = res.primary_valid_count ?? 0;
+    if (byId("rec-tampered-count")) byId("rec-tampered-count").textContent = res.primary_tampered_count ?? 0;
+    if (byId("rec-missing-count")) byId("rec-missing-count").textContent = res.primary_missing_count ?? 0;
+  } catch (err) {
+    console.warn("Could not load recovery status", err);
+  }
+}
+
+async function bootstrapRecovery() {
+  const btn = byId("recovery-sync-btn");
+  if (btn) btn.disabled = true;
+  try {
+    const res = await apiPostJson("/api/v1/recovery/bootstrap", {});
+    alert(`Recovery Vault Synchronized!\nNew copies created: ${res.copied_count}\nTotal verified: ${res.total_copies}\nBytes stored: ${res.total_bytes}`);
+    await loadRecoveryStatus();
+  } catch (err) {
+    alert("Recovery sync failed: " + err.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function runDisposableRecoveryDemo() {
+  const btn = byId("recovery-demo-btn");
+  const panel = byId("recovery-demo-panel");
+  const stepsList = byId("recovery-demo-steps");
+  if (btn) btn.disabled = true;
+  if (panel) panel.hidden = false;
+  if (stepsList) stepsList.replaceChildren(element("div", "", "Executing 4-stage disposable tamper & recovery sequence in temporary sandbox…"));
+
+  try {
+    const res = await apiPostJson("/api/v1/recovery/demo-disposable", {});
+    if (stepsList) {
+      stepsList.replaceChildren();
+      
+      const step1 = element("div", "", `[STAGE 1] Ingested clean evidence (${res.test_evidence_id}): `);
+      step1.append(element("span", "badge badge-valid", res.initial_valid ? "INITIAL VALID" : "FAILED"));
+      
+      const step2 = element("div", "", `[STAGE 2] Snapshot stored in SHA-256 Recovery Vault: `);
+      step2.append(element("span", "badge badge-valid", "COPIED"));
+
+      const step3 = element("div", "", `[STAGE 3] Primary file deleted -> State detected: `);
+      step3.append(element("span", "badge badge-tampered", res.missing_detected ? "MISSING DETECTED" : "UNNOTICED"));
+      step3.append(document.createTextNode(" -> Restored from recovery copy: "));
+      step3.append(element("span", "badge badge-valid", res.restore_missing_status));
+
+      const step4 = element("div", "", `[STAGE 4] Primary file bytes corrupted -> State detected: `);
+      step4.append(element("span", "badge badge-tampered", res.tamper_detected ? "TAMPERED DETECTED" : "UNNOTICED"));
+      step4.append(document.createTextNode(" -> Corrupted copy quarantined -> Restored from recovery copy: "));
+      step4.append(element("span", "badge badge-valid", res.restore_tampered_status));
+
+      const step5 = element("div", "", `[CONCLUSION] Final vault state: `);
+      step5.append(element("span", "badge badge-valid", res.final_state));
+      step5.append(document.createTextNode(` (${res.disclaimer})`));
+
+      stepsList.append(step1, step2, step3, step4, step5);
+    }
+    await loadRecoveryStatus();
+  } catch (err) {
+    if (stepsList) stepsList.textContent = "Demo error: " + err.message;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+if (byId("recovery-sync-btn")) byId("recovery-sync-btn").addEventListener("click", bootstrapRecovery);
+if (byId("recovery-demo-btn")) byId("recovery-demo-btn").addEventListener("click", runDisposableRecoveryDemo);
+
+
+// --- 2. ADAPTIVE MTLS PERFORMANCE LAB ---
+let mtlsInitDone = false;
+
+function initMtlsView() {
+  if (mtlsInitDone) return;
+  mtlsInitDone = true;
+  runMtlsSimulation();
+  runProfileComparison();
+}
+
+const slider = byId("mtls-risk-slider");
+if (slider) {
+  slider.addEventListener("input", (e) => {
+    const val = parseInt(e.target.value, 10);
+    const label = byId("mtls-risk-val");
+    if (!label) return;
+    if (val < 30) label.textContent = `${val} (GREEN · 120s TTL)`;
+    else if (val <= 70) label.textContent = `${val} (YELLOW · 15s freshness)`;
+    else label.textContent = `${val} (RED · Context evicted, full mTLS)`;
+  });
+}
+
+async function runMtlsSimulation() {
+  const btn = byId("mtls-run-sim-btn");
+  if (btn) btn.disabled = true;
+  setAlert("mtls-error", "");
+
+  const profile = document.querySelector('input[name="mtls-profile"]:checked')?.value || "adaptive";
+  const risk_score = parseInt(byId("mtls-risk-slider")?.value || "15", 10);
+  const inject_cert_mismatch = Boolean(byId("mtls-mismatch-check")?.checked);
+
+  try {
+    const res = await apiPostJson("/api/v1/mtls/simulate", {
+      profile,
+      risk_score,
+      inject_cert_mismatch,
+      seed: 42
+    });
+
+    const statusP = byId("mtls-topology-status");
+    if (statusP) {
+      statusP.textContent = `${res.summary} | Latency: ${res.total_latency_ms.toFixed(2)}ms`;
+    }
+
+    const badge = byId("mtls-run-summary-badge");
+    if (badge) {
+      badge.className = `badge ${res.status === "COMPLETED" ? "badge-valid" : "badge-tampered"}`;
+      badge.textContent = `${res.status} · ${res.risk_band} RISK`;
+    }
+
+    renderMtlsTopologySvg(res.hops, res.status, res.context_evicted);
+
+    const tbody = byId("mtls-hop-rows");
+    if (tbody) {
+      tbody.replaceChildren();
+      res.hops.forEach((h) => {
+        const tr = element("tr");
+        const decision = h.decision || h.outcome || "ALLOW";
+        const isErr = decision === "REJECT";
+        const isBlocked = decision === "BLOCKED";
+        const authPath = (h.auth_path || h.verification_method || "").replace(/_/g, " ");
+        const tokenUsed = Boolean(h.context_token_used || h.context_token_valid);
+
+        tr.append(element("td", "", String(h.hop_number)));
+        tr.append(element("td", "", `${h.source_service} → ${h.destination_service || h.target_service}`));
+        tr.append(element("td", "timestamp-cell", h.latency_ms > 0 ? `${h.latency_ms.toFixed(2)}ms` : "0.00ms"));
+        tr.append(element("td", "", authPath));
+        
+        const outcomeCell = element("td", "");
+        const badgeClass = isErr ? "badge-tampered" : (isBlocked ? "badge-simulated" : "badge-valid");
+        outcomeCell.append(element("span", `badge ${badgeClass}`, decision));
+        tr.append(outcomeCell);
+
+        const tokCell = element("td", "");
+        tokCell.append(element("span", tokenUsed ? "badge badge-valid" : "badge badge-simulated", tokenUsed ? "ACTIVE" : (isErr ? "EVICTED" : (isBlocked ? "BLOCKED" : "NONE"))));
+        tr.append(tokCell);
+        tbody.append(tr);
+      });
+    }
+
+    await runProfileComparison(risk_score);
+  } catch (err) {
+    setAlert("mtls-error", err.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function runProfileComparison(riskScore = 15) {
+  try {
+    const comp = await apiGet(`/api/v1/mtls/compare?risk_score=${riskScore}&seed=42`);
+    if (comp && comp.comparison) {
+      renderLatencyComparisonSvg(comp.comparison);
+    }
+  } catch (err) {
+    console.warn("Could not load latency comparison", err);
+  }
+}
+
+async function runMtlsCalibration() {
+  const btn = byId("mtls-calibrate-btn");
+  if (btn) btn.disabled = true;
+  try {
+    const cal = await apiPostJson("/api/v1/mtls/calibrate", {});
+    alert(`Host-Local Loopback TLS Calibration (127.0.0.1):\nSamples: ${cal.successful_samples}\nMean Handshake: ${cal.handshake_latency_ms.mean}ms\nMedian: ${cal.handshake_latency_ms.median}ms\np95: ${cal.handshake_latency_ms.p95}ms\n\nNotice: ${cal.disclaimer}`);
+  } catch (err) {
+    alert("Calibration failed: " + err.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function exportMtlsTelemetry() {
+  const btn = byId("mtls-export-btn");
+  if (btn) btn.disabled = true;
+  try {
+    const profile = document.querySelector('input[name="mtls-profile"]:checked')?.value || "adaptive";
+    const risk_score = parseInt(byId("mtls-risk-slider")?.value || "15", 10);
+    const inject_cert_mismatch = Boolean(byId("mtls-mismatch-check")?.checked);
+    const res = await apiPostJson("/api/v1/mtls/export-evidence", {
+      profile,
+      risk_score,
+      inject_cert_mismatch,
+      seed: 42
+    });
+    alert(`mTLS Telemetry Successfully Exported to Primary Vault!\nEvidence ID: ${res.evidence_id}\nStatus: Ingested, Verified & Parsed\nRecovery Snapshot: Created`);
+    await refreshData();
+  } catch (err) {
+    alert("Export failed: " + err.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function renderMtlsTopologySvg(hops, status, contextEvicted) {
+  const svg = byId("mtls-topology-svg");
+  if (!svg) return;
+  svg.replaceChildren();
+
+  const services = [
+    "Client", "API Gateway", "Identity", "Policy Engine", "Order Svc", "Inventory", "Payment"
+  ];
+  const nodeW = 90;
+  const nodeH = 46;
+  const startX = 15;
+  const gapX = 30;
+  const startY = 46;
+
+  services.forEach((sName, i) => {
+    const x = startX + i * (nodeW + gapX);
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", "topology-node");
+
+    let strokeColor = "#4295e5";
+    let strokeDash = "none";
+    let fillColor = "#141c26";
+    let textColor = "#e5ebf1";
+
+    if (hops && hops.length > 0) {
+      if (i === 0) {
+        strokeColor = "#72c9a2";
+      } else {
+        const hop = hops.find(h => h.hop_number === i);
+        if (!hop) {
+          strokeColor = "#303e4c";
+          fillColor = "#0f151c";
+          textColor = "#6f7d8c";
+        } else {
+          const dec = hop.decision || hop.outcome;
+          if (dec === "REJECT") {
+            strokeColor = "#ed8b91";
+            fillColor = "#2b1618";
+            textColor = "#ff9fa5";
+          } else if (dec === "BLOCKED") {
+            strokeColor = "#556475";
+            strokeDash = "4, 4";
+            fillColor = "#0e1319";
+            textColor = "#657484";
+          } else {
+            strokeColor = "#72c9a2";
+          }
+        }
+      }
+    }
+
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", startY);
+    rect.setAttribute("width", nodeW);
+    rect.setAttribute("height", nodeH);
+    rect.setAttribute("rx", "5");
+    rect.setAttribute("fill", fillColor);
+    rect.setAttribute("stroke", strokeColor);
+    if (strokeDash !== "none") rect.setAttribute("stroke-dasharray", strokeDash);
+    rect.setAttribute("stroke-width", "1.5");
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x + nodeW / 2);
+    text.setAttribute("y", startY + 28);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("fill", textColor);
+    text.setAttribute("font-size", "11");
+    text.setAttribute("font-family", "Inter, sans-serif");
+    text.setAttribute("font-weight", "600");
+    text.textContent = sName;
+
+    g.append(rect, text);
+    svg.append(g);
+
+    // Connecting arrow to next node
+    if (i < services.length - 1) {
+      const hopIdx = i + 1;
+      const hop = hops ? hops.find(h => h.hop_number === hopIdx) : null;
+      let arrowColor = "#303e4c";
+      let arrowDash = "none";
+      if (hop) {
+        const dec = hop.decision || hop.outcome;
+        if (dec === "REJECT") {
+          arrowColor = "#ed8b91";
+        } else if (dec === "BLOCKED") {
+          arrowColor = "#445363";
+          arrowDash = "3, 3";
+        } else {
+          arrowColor = "#72c9a2";
+        }
+      }
+
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      const x1 = x + nodeW;
+      const x2 = x + nodeW + gapX;
+      const y = startY + nodeH / 2;
+      line.setAttribute("x1", x1);
+      line.setAttribute("y1", y);
+      line.setAttribute("x2", x2);
+      line.setAttribute("y2", y);
+      line.setAttribute("stroke", arrowColor);
+      line.setAttribute("stroke-width", "2");
+      if (arrowDash !== "none") line.setAttribute("stroke-dasharray", arrowDash);
+
+      const head = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      head.setAttribute("points", `${x2-5},${y-4} ${x2},${y} ${x2-5},${y+4}`);
+      head.setAttribute("fill", arrowColor);
+
+      svg.append(line, head);
+
+      if (hop && hop.latency_ms > 0) {
+        const latText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        latText.setAttribute("x", x1 + gapX / 2);
+        latText.setAttribute("y", y - 7);
+        latText.setAttribute("text-anchor", "middle");
+        latText.setAttribute("fill", arrowColor);
+        latText.setAttribute("font-size", "9");
+        latText.setAttribute("font-family", "monospace");
+        latText.textContent = `${hop.latency_ms.toFixed(1)}ms`;
+        svg.append(latText);
+      }
+    }
+  });
+}
+
+function renderLatencyComparisonSvg(comparison) {
+  const svg = byId("mtls-latency-svg");
+  if (!svg || !comparison) return;
+  svg.replaceChildren();
+
+  const churn = comparison.churn?.total_latency_ms || 60;
+  const persistent = comparison.persistent?.total_latency_ms || 28;
+  const adaptive = comparison.adaptive?.total_latency_ms || 18;
+
+  const maxVal = Math.max(churn, persistent, adaptive, 70);
+  const barHeight = 22;
+  const barYStart = 20;
+  const barGap = 38;
+  const maxBarWidth = 400;
+  const labelX = 140;
+
+  const modes = [
+    { name: "High Churn mTLS", val: churn, color: "#ed8b91" },
+    { name: "Persistent Baseline", val: persistent, color: "#83b8e7" },
+    { name: "Risk-Adaptive mTLS", val: adaptive, color: "#72c9a2" },
+  ];
+
+  modes.forEach((m, idx) => {
+    const y = barYStart + idx * barGap;
+    const w = (m.val / maxVal) * maxBarWidth;
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX - 10);
+    label.setAttribute("y", y + 16);
+    label.setAttribute("text-anchor", "end");
+    label.setAttribute("fill", "#c0cad4");
+    label.setAttribute("font-size", "12");
+    label.setAttribute("font-family", "Inter, sans-serif");
+    label.textContent = m.name;
+
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", labelX);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", Math.max(w, 8));
+    rect.setAttribute("height", barHeight);
+    rect.setAttribute("rx", "3");
+    rect.setAttribute("fill", m.color);
+
+    const valText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    valText.setAttribute("x", labelX + w + 10);
+    valText.setAttribute("y", y + 16);
+    valText.setAttribute("fill", "#eaf1f7");
+    valText.setAttribute("font-size", "12");
+    valText.setAttribute("font-family", "monospace");
+    valText.setAttribute("font-weight", "600");
+    valText.textContent = `${m.val.toFixed(2)} ms`;
+
+    svg.append(label, rect, valText);
+  });
+}
+
+if (byId("mtls-run-sim-btn")) byId("mtls-run-sim-btn").addEventListener("click", runMtlsSimulation);
+if (byId("mtls-calibrate-btn")) byId("mtls-calibrate-btn").addEventListener("click", runMtlsCalibration);
+if (byId("mtls-export-btn")) byId("mtls-export-btn").addEventListener("click", exportMtlsTelemetry);
+
+
+// --- 3. SYNTHETIC DATASET REPLAY ---
+let replayPollTimer = null;
+
+async function loadDatasetInfo() {
+  try {
+    const info = await apiGet("/api/v1/dataset/info");
+    const badge = byId("replay-status-badge");
+    if (info.valid) {
+      if (badge) {
+        badge.className = "badge badge-valid";
+        badge.textContent = `CORPUS VALID (v${info.version})`;
+      }
+    }
+    await pollReplayStatus();
+  } catch (err) {
+    console.warn("Could not load dataset info", err);
+  }
+}
+
+let isReplayPolling = false;
+async function pollReplayStatus() {
+  if (isReplayPolling) return;
+  isReplayPolling = true;
+  try {
+    const st = await apiGet("/api/v1/dataset/replay/status");
+    if (!st) return;
+
+    if (byId("replay-run-id-text")) {
+      byId("replay-run-id-text").textContent = st.run_id ? `Run ID: ${st.run_id}` : "No active replay run.";
+    }
+
+    const badge = byId("replay-status-badge");
+    if (badge && st.status) {
+      badge.textContent = st.status.toUpperCase();
+      badge.className = `badge ${st.status === "running" ? "badge-valid" : (st.status === "completed" ? "badge-pending" : "badge-simulated")}`;
+    }
+
+    const prepared = st.records_prepared || st.records_selected || 0;
+    const target = st.target_total || st.records_selected || st.record_limit || 1000;
+    const pct = target > 0 ? Math.min(100, Math.round((prepared / target) * 100)) : 0;
+    if (byId("replay-progress-fill")) byId("replay-progress-fill").style.width = `${pct}%`;
+    if (byId("replay-progress-pct")) byId("replay-progress-pct").textContent = `${pct}% (${st.records_ingested}/${prepared})`;
+    if (byId("replay-elapsed-time")) byId("replay-elapsed-time").textContent = `Elapsed: ${st.elapsed_seconds.toFixed(1)}s`;
+
+    if (byId("replay-count-ingested")) byId("replay-count-ingested").textContent = st.records_ingested;
+    if (byId("replay-count-parsed")) byId("replay-count-parsed").textContent = st.records_parsed;
+    if (byId("replay-count-batches")) byId("replay-count-batches").textContent = st.batches_created;
+    if (byId("replay-count-failed")) byId("replay-count-failed").textContent = st.records_failed;
+
+    if (byId("replay-cur-source")) byId("replay-cur-source").textContent = st.current_source || "—";
+    if (byId("replay-cur-batch")) byId("replay-cur-batch").textContent = st.current_batch ? `Batch #${st.current_batch}` : "—";
+
+    // Button states
+    const isRunning = st.status === "running";
+    const isPaused = st.status === "paused";
+    if (byId("replay-start-btn")) byId("replay-start-btn").disabled = isRunning;
+    if (byId("replay-pause-btn")) byId("replay-pause-btn").disabled = !isRunning;
+    if (byId("replay-resume-btn")) byId("replay-resume-btn").disabled = !isPaused;
+    if (byId("replay-stop-btn")) byId("replay-stop-btn").disabled = !(isRunning || isPaused);
+
+    if (st.status === "completed" || st.status === "stopped" || st.status === "error") {
+      if (replayPollTimer) {
+        clearInterval(replayPollTimer);
+        replayPollTimer = null;
+      }
+      refreshData();
+      loadInvestigationRisk();
+      loadCorrelationGraph();
+    }
+  } catch (err) {
+    console.warn("Replay poll error", err);
+  } finally {
+    isReplayPolling = false;
+  }
+}
+
+async function startReplay() {
+  const sources = Array.from(document.querySelectorAll('input[name="replay-source"]:checked')).map(cb => cb.value);
+  if (!sources.length) {
+    alert("Please select at least one source file.");
+    return;
+  }
+  const seed = parseInt(byId("replay-seed")?.value || "42", 10);
+  const record_limit = parseInt(byId("replay-cap")?.value || "1000", 10);
+  const batch_size = parseInt(byId("replay-batch-size")?.value || "200", 10);
+  const inter_batch_delay_ms = parseInt(byId("replay-delay")?.value || "50", 10);
+
+  setAlert("replay-error", "");
+  try {
+    await apiPostJson("/api/v1/dataset/replay/start", {
+      sources,
+      seed,
+      record_limit,
+      batch_size,
+      delay_ms: inter_batch_delay_ms,
+      inter_batch_delay_ms
+    });
+
+    if (!replayPollTimer) {
+      replayPollTimer = setInterval(pollReplayStatus, 800);
+    }
+    await pollReplayStatus();
+  } catch (err) {
+    setAlert("replay-error", err.message);
+  }
+}
+
+async function pauseReplay() {
+  try {
+    await apiPostJson("/api/v1/dataset/replay/pause", {});
+    await pollReplayStatus();
+  } catch (err) {
+    setAlert("replay-error", err.message);
+  }
+}
+
+async function resumeReplay() {
+  try {
+    await apiPostJson("/api/v1/dataset/replay/resume", {});
+    if (!replayPollTimer) {
+      replayPollTimer = setInterval(pollReplayStatus, 800);
+    }
+    await pollReplayStatus();
+  } catch (err) {
+    setAlert("replay-error", err.message);
+  }
+}
+
+async function stopReplay() {
+  try {
+    await apiPostJson("/api/v1/dataset/replay/stop", {});
+    await pollReplayStatus();
+  } catch (err) {
+    setAlert("replay-error", err.message);
+  }
+}
+
+if (byId("replay-start-btn")) byId("replay-start-btn").addEventListener("click", startReplay);
+if (byId("replay-pause-btn")) byId("replay-pause-btn").addEventListener("click", pauseReplay);
+if (byId("replay-resume-btn")) byId("replay-resume-btn").addEventListener("click", resumeReplay);
+if (byId("replay-stop-btn")) byId("replay-stop-btn").addEventListener("click", stopReplay);
+
+
+// --- 4. INVESTIGATION RISK & CORRELATION GRAPH ---
+async function loadInvestigationRisk() {
+  try {
+    const res = await apiGet("/api/v1/investigation/risk-score");
+    if (!res) return;
+
+    if (byId("risk-score-number")) byId("risk-score-number").textContent = res.score ?? 0;
+    if (byId("risk-score-band")) {
+      byId("risk-score-band").textContent = res.risk_band || res.severity_band || "LOW";
+      byId("risk-score-band").style.color = res.score > 70 ? "var(--red)" : (res.score > 30 ? "var(--amber)" : "var(--green)");
+    }
+    if (byId("risk-score-circle")) {
+      const color = res.score > 70 ? "var(--red)" : (res.score > 30 ? "var(--amber)" : "var(--green)");
+      byId("risk-score-circle").style.borderColor = color;
+    }
+
+    const factors = res.factors || {};
+    if (byId("factor-sev")) byId("factor-sev").style.width = `${Math.min(100, (factors.severity_weight || 0) * 4)}%`;
+    if (byId("factor-pat")) byId("factor-pat").style.width = `${Math.min(100, (factors.suspicious_patterns || 0) * 4)}%`;
+    if (byId("factor-cor")) byId("factor-cor").style.width = `${Math.min(100, (factors.cross_source_corroboration || 0) * 4)}%`;
+    if (byId("factor-prv")) byId("factor-prv").style.width = `${Math.min(100, (factors.privilege_persistence_indicators || 0) * 4)}%`;
+    if (byId("factor-seq")) byId("factor-seq").style.width = `${Math.min(100, (factors.sequence_support || 0) * 4)}%`;
+  } catch (err) {
+    console.warn("Could not load risk score", err);
+  }
+}
+
+async function loadCorrelationGraph() {
+  try {
+    const data = await apiGet("/api/v1/investigation/correlation-graph?max_nodes=12");
+    if (data) {
+      renderCorrelationGraphSvg(data.nodes || [], data.edges || []);
+    }
+  } catch (err) {
+    console.warn("Could not load correlation graph", err);
+  }
+}
+
+function renderCorrelationGraphSvg(nodes, edges) {
+  const svg = byId("correlation-graph-svg");
+  if (!svg) return;
+  svg.replaceChildren();
+
+  if (!nodes || nodes.length === 0) {
+    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt.setAttribute("x", "325");
+    txt.setAttribute("y", "100");
+    txt.setAttribute("text-anchor", "middle");
+    txt.setAttribute("fill", "#6f7d8c");
+    txt.setAttribute("font-size", "13");
+    txt.textContent = "No correlated entities observed yet. Run dataset replay or event analysis.";
+    svg.append(txt);
+    return;
+  }
+
+  const cx = 325;
+  const cy = 100;
+  const r = 70;
+  const positions = {};
+
+  nodes.forEach((node, i) => {
+    const angle = (2 * Math.PI / nodes.length) * i;
+    const nx = cx + r * Math.cos(angle) * 1.8;
+    const ny = cy + r * Math.sin(angle) * 0.9;
+    positions[node.id] = { x: nx, y: ny, data: node };
+  });
+
+  // Render edges
+  edges.forEach((edge) => {
+    const p1 = positions[edge.source];
+    const p2 = positions[edge.target];
+    if (p1 && p2) {
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", p1.x);
+      line.setAttribute("y1", p1.y);
+      line.setAttribute("x2", p2.x);
+      line.setAttribute("y2", p2.y);
+      line.setAttribute("stroke", "#2b3b4c");
+      line.setAttribute("stroke-width", "1.5");
+      svg.append(line);
+    }
+  });
+
+  // Render nodes
+  Object.values(positions).forEach(({ x, y, data }) => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.style.cursor = "pointer";
+
+    let color = "#83b8e7";
+    if (data.type === "host") color = "#72c9a2";
+    else if (data.type === "user") color = "#e1bd72";
+    else if (data.type === "ip") color = "#ed8b91";
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", x);
+    circle.setAttribute("cy", y);
+    circle.setAttribute("r", "16");
+    circle.setAttribute("fill", "#141c25");
+    circle.setAttribute("stroke", color);
+    circle.setAttribute("stroke-width", "2");
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x);
+    text.setAttribute("y", y + 4);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("fill", "#f0f4f8");
+    text.setAttribute("font-size", "9");
+    text.setAttribute("font-family", "monospace");
+    text.textContent = (data.label || data.id).slice(0, 4);
+
+    g.append(circle, text);
+
+    g.addEventListener("click", () => {
+      const detail = byId("correlation-node-detail");
+      if (detail) {
+        detail.hidden = false;
+        detail.innerHTML = `<strong>Entity:</strong> ${data.label || data.id} &nbsp;|&nbsp; <strong>Type:</strong> ${data.type} &nbsp;|&nbsp; <strong>Event Count:</strong> ${data.event_count || 1}`;
+      }
+    });
+
+    svg.append(g);
+  });
+}
+
+if (byId("risk-refresh-btn")) byId("risk-refresh-btn").addEventListener("click", loadInvestigationRisk);
+if (byId("correlation-refresh-btn")) byId("correlation-refresh-btn").addEventListener("click", loadCorrelationGraph);

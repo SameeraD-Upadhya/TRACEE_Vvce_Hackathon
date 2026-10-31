@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "test_vault": "temporary isolated vault (removed after test)",
+  "evidence_objects_ingested": 10,
+  "evidence_objects_verified_valid": 10,
+  "analysis_runs": 10,
+  "analysis_events_total": 10000,
+  "custody_chain_records": 10,
+  "full_custody_chain_verification": "PASS",
+  "results": [
+    {
+      "replay_sequence": 1,
+      "source_id": "windows_sysmon",
+      "parser_id": "windows_event",
+      "evidence_id": "TRACE-EV-000001",
+      "sha256": "ff04b7d11290885d02ba0387256b1d0d46dc04df59da1a63a143fd85303a1905",
+      "size_bytes": 1195860,
+      "chain_sequence": 1,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 2,
+      "source_id": "web_application",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000002",
+      "sha256": "069cfdac6887083fbd2ff566430d3d8ab9d9d65c73185b0a3c6880803b5f2913",
+      "size_bytes": 647731,
+      "chain_sequence": 2,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 3,
+      "source_id": "network_flow",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000003",
+      "sha256": "964ac5fd305bae85615afd1263c6c7b8d37720416aba88406b571cc27b55cea9",
+      "size_bytes": 632060,
+      "chain_sequence": 3,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 4,
+      "source_id": "linux_auth",
+      "parser_id": "linux_auth",
+      "evidence_id": "TRACE-EV-000004",
+      "sha256": "f7a7f9e81e15aee38dbc1f096736f6347521271f210c0c1805af936affd7bf7b",
+      "size_bytes": 63409,
+      "chain_sequence": 4,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 5,
+      "source_id": "service_persistence",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000005",
+      "sha256": "6cb96d87a1cd8686249bc3d70be762f236a45e38a9c1782d653c67e6441a0870",
+      "size_bytes": 603039,
+      "chain_sequence": 5,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 6,
+      "source_id": "filesystem",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000006",
+      "sha256": "d736476cd2e2ada61fcfc947fe83b2db952d28cb51a08fd4ba90a1e501c944fb",
+      "size_bytes": 597510,
+      "chain_sequence": 6,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 7,
+      "source_id": "systemd_journal",
+      "parser_id": "systemd_journal",
+      "evidence_id": "TRACE-EV-000007",
+      "sha256": "1f9153a790ff85e06607f0207d8b07aa94578e1e3f742a0260c71252ac892d63",
+      "size_bytes": 475763,
+      "chain_sequence": 7,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 8,
+      "source_id": "process_activity",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000008",
+      "sha256": "1f5e90c055f00ac70c3752a5ed3c09f085fafc2941fe454ed252a4a1305f09cb",
+      "size_bytes": 600921,
+      "chain_sequence": 8,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 9,
+      "source_id": "windows_security",
+      "parser_id": "windows_event",
+      "evidence_id": "TRACE-EV-000009",
+      "sha256": "881442b43dcd5f157650b4ece7d32a9340886fb43a8af1e9b49aa0bdacda628e",
+      "size_bytes": 1086328,
+      "chain_sequence": 9,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    },
+    {
+      "replay_sequence": 10,
+      "source_id": "dns",
+      "parser_id": "json_event",
+      "evidence_id": "TRACE-EV-000010",
+      "sha256": "c8c8dd0cd38e09b37cabe7b1e7e3a0c186806096a8580579514cae7db3cfc965",
+      "size_bytes": 603331,
+      "chain_sequence": 10,
+      "verification": "VALID",
+      "analysis_event_count": 1000
+    }
+  ]
+}

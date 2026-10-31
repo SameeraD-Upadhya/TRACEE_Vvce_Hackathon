@@ -451,7 +451,12 @@ def create_app(vault_dir: str | Path | None = None) -> FastAPI:
             auth_error = _api_auth_error(request)
             if auth_error is not None:
                 return auth_error
-        return await call_next(request)
+        response = await call_next(request)
+        if request.url.path.endswith((".css", ".js", ".html", ".png")):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
 
     def service_or_error() -> tuple[TraceeService | None, JSONResponse | None]:
         root = app.state.vault_dir
@@ -655,6 +660,8 @@ def create_app(vault_dir: str | Path | None = None) -> FastAPI:
             "evidence_id": safe_id,
             "message": safe_messages[result.state.value],
         }
+        if result.message and result.message != safe_messages.get(result.state.value):
+            response["diagnostics"] = result.message
         try:
             ActivityLog(service.vault_dir).append(
                 event_type="integrity_verification",
@@ -1467,6 +1474,287 @@ def create_app(vault_dir: str | Path | None = None) -> FastAPI:
             }
         except ActivityLogError as exc:
             return activity_failure(exc)
+
+    # -------------------------------------------------------------------------
+    # Integration: Dataset Replay, Adaptive mTLS Lab, Recovery Centre, Risk Engine
+    # -------------------------------------------------------------------------
+    from dataclasses import asdict
+    from .dataset_replay import discover_dataset, validate_dataset_corpus, DatasetReplayController
+    from .mtls_lab import MtlsSimulator, HopResult
+    from .recovery import RecoveryStore
+    from .classifier import IncidentRiskEngine, CorrelationEngine
+
+    workspace_root = Path(__file__).resolve().parents[2]
+    effective_vault = vault_dir if vault_dir else (workspace_root / "demo_vault")
+
+    recovery_store = RecoveryStore(effective_vault)
+    replay_controller = DatasetReplayController(workspace_root, effective_vault)
+    mtls_sim = MtlsSimulator()
+    risk_engine = IncidentRiskEngine()
+    correlator = CorrelationEngine()
+
+    @app.get("/api/v1/dataset/info")
+    def get_dataset_info(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        ds_dir = discover_dataset(workspace_root)
+        if not ds_dir:
+            return {"discovered": False, "message": "Dataset not found in workspace."}
+        res = validate_dataset_corpus(ds_dir)
+        res["discovered"] = True
+        return res
+
+    @app.get("/api/v1/dataset/replay/status")
+    def get_replay_status(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return replay_controller.get_status()
+
+    @app.post("/api/v1/dataset/replay/start")
+    async def start_replay(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        sources = body.get("sources")
+        seed = int(body.get("seed", 42))
+        record_limit = int(body.get("record_limit", 1000))
+        batch_size = int(body.get("batch_size", 100))
+        delay_ms = int(body.get("delay_ms", 50))
+
+        def _on_batch(eid: str, parser_id: str):
+            try:
+                recovery_store.create_recovery_copy(eid)
+            except Exception as exc:
+                logger.warning("Recovery copy warning for %s: %s", eid, exc)
+
+        res = replay_controller.start_replay(
+            sources=sources,
+            seed=seed,
+            record_limit=record_limit,
+            batch_size=batch_size,
+            delay_ms=delay_ms,
+            on_batch_complete=_on_batch,
+        )
+        return res
+
+    @app.post("/api/v1/dataset/replay/pause")
+    def pause_replay(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return replay_controller.pause_replay()
+
+    @app.post("/api/v1/dataset/replay/resume")
+    def resume_replay(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return replay_controller.resume_replay()
+
+    @app.post("/api/v1/dataset/replay/stop")
+    def stop_replay(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return replay_controller.stop_replay()
+
+    @app.post("/api/v1/mtls/simulate")
+    async def simulate_mtls(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        profile = body.get("profile", "adaptive")
+        risk_score = int(body.get("risk_score", 15))
+        mismatch = bool(body.get("inject_cert_mismatch", False))
+        seed = int(body.get("seed", 42))
+        client_id = body.get("client_id", "client-service-mesh-01")
+
+        result = mtls_sim.run_simulation(
+            profile=profile,
+            risk_score=risk_score,
+            inject_cert_mismatch=mismatch,
+            seed=seed,
+            client_id=client_id,
+        )
+        return {
+            "run_id": result.run_id,
+            "profile": result.profile,
+            "timestamp": result.timestamp,
+            "seed": result.seed,
+            "client_id": result.client_id,
+            "session_id": result.session_id,
+            "inject_cert_mismatch": result.inject_cert_mismatch,
+            "risk_score": result.risk_score,
+            "risk_band": result.risk_band,
+            "total_latency_ms": result.total_latency_ms,
+            "status": result.status,
+            "context_evicted": result.context_evicted,
+            "summary": result.summary,
+            "hops": [asdict(h) for h in result.hops],
+        }
+
+    @app.get("/api/v1/mtls/compare")
+    def compare_mtls(request: Request, risk_score: int = 15, seed: int = 42):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return mtls_sim.run_profile_comparison(risk_score=risk_score, seed=seed)
+
+    @app.post("/api/v1/mtls/calibrate")
+    def calibrate_mtls(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return mtls_sim.run_local_tls_calibration()
+
+    @app.post("/api/v1/mtls/export-evidence")
+    async def export_mtls_evidence(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        service, error_response = service_or_error()
+        if error_response:
+            return error_response
+        assert service is not None
+
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        profile = body.get("profile", "adaptive")
+        risk_score = int(body.get("risk_score", 15))
+        mismatch = bool(body.get("inject_cert_mismatch", False))
+        seed = int(body.get("seed", 42))
+
+        sim_res = mtls_sim.run_simulation(
+            profile=profile,
+            risk_score=risk_score,
+            inject_cert_mismatch=mismatch,
+            seed=seed,
+        )
+        jsonl_data = mtls_sim.export_telemetry_to_jsonl(sim_res).encode("utf-8")
+
+        staging_dir = service.vault_dir / ".staging"
+        staging_dir.mkdir(parents=True, exist_ok=True)
+        fname = f"mtls_telemetry_{sim_res.run_id}.jsonl"
+        tfile = staging_dir / fname
+        tfile.write_bytes(jsonl_data)
+
+        meta, _ = service.ingest(tfile)
+        tfile.unlink(missing_ok=True)
+
+        recovery_store.create_recovery_copy(meta.evidence_id)
+
+        analysis_service = EvidenceAnalysisService(service)
+        try:
+            analysis_service.analyze(meta.evidence_id, "json_event")
+        except Exception as p_err:
+            logger.warning("mTLS analysis parsing warning: %s", p_err)
+
+        return {
+            "evidence_id": meta.evidence_id,
+            "filename": fname,
+            "sha256": meta.sha256,
+            "run_id": sim_res.run_id,
+            "message": "mTLS simulation telemetry ingested as evidence and parsed.",
+        }
+
+    # Recovery Centre routes
+    @app.get("/api/v1/recovery/status")
+    def get_recovery_status(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return recovery_store.get_recovery_status()
+
+    @app.post("/api/v1/recovery/bootstrap")
+    def bootstrap_recovery(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return recovery_store.bootstrap_recovery_store()
+
+    @app.post("/api/v1/recovery/{evidence_id}/restore")
+    def restore_evidence_endpoint(request: Request, evidence_id: str):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return recovery_store.restore_evidence(evidence_id)
+
+    @app.post("/api/v1/recovery/{evidence_id}/simulate-tamper")
+    def simulate_tamper_endpoint(request: Request, evidence_id: str):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return recovery_store.simulate_tamper(evidence_id)
+
+    @app.post("/api/v1/recovery/{evidence_id}/simulate-missing")
+    def simulate_missing_endpoint(request: Request, evidence_id: str):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return recovery_store.simulate_missing(evidence_id)
+
+    @app.post("/api/v1/recovery/demo-disposable")
+    def demo_disposable_vault(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        return RecoveryStore.run_disposable_vault_demo()
+
+    def _collect_all_events() -> list[dict[str, Any]]:
+        service, _ = service_or_error()
+        if not service:
+            return []
+        analysis_service = EvidenceAnalysisService(service)
+        all_events = []
+        try:
+            records = list(service.vault.records_dir.glob("*.json"))
+            for rf in records:
+                eid = rf.stem
+                analyses, _ = analysis_service.list_analyses(eid, limit=5)
+                for an in analyses:
+                    an_id = an.get("analysis_id")
+                    if an_id:
+                        try:
+                            full = analysis_service.load_analysis(eid, an_id)
+                            ev_list = full.get("events", [])
+                            for ev in ev_list:
+                                ev["evidence_id"] = eid
+                            all_events.extend(ev_list)
+                        except Exception:
+                            pass
+        except Exception as e:
+            logger.warning("Event collection warning: %s", e)
+        return all_events
+
+    @app.get("/api/v1/investigation/risk-score")
+    def get_investigation_risk_score(request: Request):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        events = _collect_all_events()
+        res = risk_engine.evaluate_incident(events)
+        return asdict(res)
+
+    @app.get("/api/v1/investigation/correlation-graph")
+    def get_correlation_graph(request: Request, max_nodes: int = 12):
+        auth_error = _api_auth_error(request)
+        if auth_error:
+            return auth_error
+        events = _collect_all_events()
+        return correlator.build_correlation_graph(events, max_nodes=max_nodes)
+
 
     ui_directory = Path(__file__).resolve().parents[2] / "ui"
     if ui_directory.is_dir():

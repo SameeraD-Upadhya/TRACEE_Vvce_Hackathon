@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "tracee_root": "/mnt/data/tracee_dataset_work/TRACEE/TRACEE",
+  "parser_ids_tested": [
+    "json_event",
+    "linux_auth",
+    "systemd_journal",
+    "windows_event"
+  ],
+  "batches_checked": 10,
+  "checks": [
+    {
+      "file": "linux_auth/linux_auth-batch-0001.log",
+      "parser_id": "linux_auth",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "systemd_journal/systemd_journal-batch-0001.jsonl",
+      "parser_id": "systemd_journal",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "windows_security/windows_security-batch-0001.jsonl",
+      "parser_id": "windows_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "windows_sysmon/windows_sysmon-batch-0001.jsonl",
+      "parser_id": "windows_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "process_activity/process_activity-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "network_flow/network_flow-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "dns/dns-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "filesystem/filesystem-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "service_persistence/service_persistence-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    },
+    {
+      "file": "web_application/web_application-batch-0001.jsonl",
+      "parser_id": "json_event",
+      "records_checked": 25,
+      "can_parse": true,
+      "parse_line": true
+    }
+  ]
+}

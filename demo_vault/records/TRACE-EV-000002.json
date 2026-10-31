@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000002",
+  "original_filename": "temp_flow.jsonl",
+  "size_bytes": 564,
+  "sha256": "6d56d4a0e110a088034330ef317e3fc64b6b37865f3ccc52917f5ad19f6fd347",
+  "ingested_at": "2026-10-31T01:11:06.076037Z",
+  "media_type": "application/octet-stream"
+}

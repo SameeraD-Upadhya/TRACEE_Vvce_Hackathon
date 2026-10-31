@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "total_records": 750000,
+  "positive_ground_truth_rows": 9377,
+  "ground_truth_label_counts": {
+    "SUSPICIOUS": 5813,
+    "MALICIOUS": 3564
+  },
+  "scenario_profile_count": 8,
+  "sources": [
+    {
+      "source": "linux_auth",
+      "records": 90000,
+      "sha256_ok": true
+    },
+    {
+      "source": "systemd_journal",
+      "records": 75000,
+      "sha256_ok": true
+    },
+    {
+      "source": "windows_security",
+      "records": 95000,
+      "sha256_ok": true
+    },
+    {
+      "source": "windows_sysmon",
+      "records": 100000,
+      "sha256_ok": true
+    },
+    {
+      "source": "process_activity",
+      "records": 70000,
+      "sha256_ok": true
+    },
+    {
+      "source": "network_flow",
+      "records": 75000,
+      "sha256_ok": true
+    },
+    {
+      "source": "dns",
+      "records": 55000,
+      "sha256_ok": true
+    },
+    {
+      "source": "filesystem",
+      "records": 60000,
+      "sha256_ok": true
+    },
+    {
+      "source": "service_persistence",
+      "records": 55000,
+      "sha256_ok": true
+    },
+    {
+      "source": "web_application",
+      "records": 75000,
+      "sha256_ok": true
+    }
+  ]
+}

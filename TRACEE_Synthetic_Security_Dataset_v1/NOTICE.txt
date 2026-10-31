@@ -1,0 +1,5 @@
+TRACEE Synthetic Multi-Source Security Telemetry Corpus v1.0.0
+
+This package contains 750,000 generated synthetic security-event records and standard-library adapter utilities. No logs, hostnames, accounts, network sessions, or event records were collected from real systems. This corpus is intended for software development, parser testing, controlled replay, demonstrations, and evaluation-method development. It must not be represented as genuine endpoint telemetry or as a public real-world measurement dataset.
+
+The IP addresses and domain names are chosen from private/documentation or reserved example/test namespaces. Windows event records are synthetic JSONL envelopes containing constructed event XML; they are not native EVTX files. Network-flow records are metadata, not PCAP captures.

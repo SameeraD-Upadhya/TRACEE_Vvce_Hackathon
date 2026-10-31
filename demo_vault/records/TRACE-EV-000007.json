@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000007",
+  "original_filename": "invalid_custody_chain_sample.json",
+  "size_bytes": 70,
+  "sha256": "0bdf48d54b5de8598f080be287b53f36e7cc3225a59c436d17b8230d8c748c74",
+  "ingested_at": "2026-10-31T01:30:00.000000Z",
+  "media_type": "application/json"
+}

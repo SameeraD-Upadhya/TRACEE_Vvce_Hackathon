@@ -1,0 +1,2 @@
+{"MESSAGE": "User session slice created", "PRIORITY": "6", "__REALTIME_TIMESTAMP": "1730347980000000", "_SYSTEMD_UNIT": "session-1.scope", "_HOSTNAME": "db-srv"}
+{"MESSAGE": "Authentication failure on pam_unix", "PRIORITY": "3", "__REALTIME_TIMESTAMP": "1730347995000000", "_SYSTEMD_UNIT": "systemd-logind.service", "_HOSTNAME": "db-srv"}

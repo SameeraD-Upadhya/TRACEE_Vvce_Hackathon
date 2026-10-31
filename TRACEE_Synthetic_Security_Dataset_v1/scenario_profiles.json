@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "profiles": [
+    {
+      "profile_id": "credential_abuse",
+      "description": "Repeated authentication failures followed by successful access and follow-on activity.",
+      "source_ids": [
+        "dns",
+        "linux_auth",
+        "network_flow",
+        "process_activity",
+        "systemd_journal",
+        "windows_security",
+        "windows_sysmon"
+      ],
+      "steps": 9,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "privilege_escalation",
+      "description": "Privilege elevation and protected-resource/service activity across host logs.",
+      "source_ids": [
+        "filesystem",
+        "linux_auth",
+        "process_activity",
+        "service_persistence",
+        "systemd_journal",
+        "windows_security",
+        "windows_sysmon"
+      ],
+      "steps": 7,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "suspicious_execution",
+      "description": "Unusual process ancestry, interpreter activity, and related file/network observations.",
+      "source_ids": [
+        "dns",
+        "filesystem",
+        "network_flow",
+        "process_activity",
+        "systemd_journal",
+        "windows_sysmon"
+      ],
+      "steps": 8,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "dns_anomaly",
+      "description": "High-entropy or repeated DNS lookups associated with periodic outbound connections.",
+      "source_ids": [
+        "dns",
+        "network_flow",
+        "process_activity",
+        "windows_sysmon"
+      ],
+      "steps": 6,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "persistence_change",
+      "description": "Service, scheduled-task, registry and startup configuration changes.",
+      "source_ids": [
+        "filesystem",
+        "process_activity",
+        "service_persistence",
+        "systemd_journal",
+        "windows_security",
+        "windows_sysmon"
+      ],
+      "steps": 7,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "lateral_movement",
+      "description": "Remote logons and service/network activity across related endpoints.",
+      "source_ids": [
+        "linux_auth",
+        "network_flow",
+        "process_activity",
+        "systemd_journal",
+        "windows_security",
+        "windows_sysmon"
+      ],
+      "steps": 7,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "possible_exfiltration",
+      "description": "Sensitive file reads, archive activity, and unusually large outbound transfers.",
+      "source_ids": [
+        "dns",
+        "filesystem",
+        "network_flow",
+        "process_activity",
+        "web_application",
+        "windows_sysmon"
+      ],
+      "steps": 6,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    },
+    {
+      "profile_id": "web_attack_pattern",
+      "description": "Suspicious web requests, validation blocks, application outcomes and related host activity.",
+      "source_ids": [
+        "filesystem",
+        "network_flow",
+        "process_activity",
+        "web_application"
+      ],
+      "steps": 6,
+      "ground_truth_labels": [
+        "SUSPICIOUS",
+        "MALICIOUS"
+      ]
+    }
+  ]
+}

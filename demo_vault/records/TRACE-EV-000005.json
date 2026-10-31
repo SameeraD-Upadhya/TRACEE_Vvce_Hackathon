@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000005",
+  "original_filename": "tampered_evidence_payload.json",
+  "size_bytes": 70,
+  "sha256": "81b56adef09a62a1f2d987ba2b4065de3d1fd59672390f0e4a23c22ee9985571",
+  "ingested_at": "2026-10-31T02:03:37.298243Z",
+  "media_type": "application/json"
+}

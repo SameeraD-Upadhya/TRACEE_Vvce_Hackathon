@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000001",
+  "original_filename": "temp_auth.log",
+  "size_bytes": 456,
+  "sha256": "62a4d7ed7a416f4260686334e0a70cbb61522f40e0a6dc436fb624fe53fe67c0",
+  "ingested_at": "2026-10-31T01:11:06.011347Z",
+  "media_type": "application/octet-stream"
+}

@@ -1,0 +1,4 @@
+Oct 31 04:12:01 edge-gateway sshd[1024]: Failed password for invalid user admin from 192.168.1.105 port 44210 ssh2
+Oct 31 04:12:05 edge-gateway sshd[1025]: Failed password for invalid user admin from 192.168.1.105 port 44212 ssh2
+Oct 31 04:12:10 edge-gateway sshd[1026]: Accepted password for analyst from 192.168.1.105 port 44214 ssh2
+Oct 31 04:12:22 edge-gateway sudo:   analyst : TTY=pts/0 ; PWD=/home/analyst ; USER=root ; COMMAND=/bin/cat /etc/shadow

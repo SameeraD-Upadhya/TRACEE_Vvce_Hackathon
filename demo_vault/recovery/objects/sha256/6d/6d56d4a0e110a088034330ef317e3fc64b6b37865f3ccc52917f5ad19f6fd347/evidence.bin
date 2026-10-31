@@ -1,0 +1,3 @@
+{"event_type": "network_connection", "timestamp": "2026-10-31T04:13:00Z", "attributes": {"source_ip": "192.168.1.105", "dest_ip": "10.0.0.50", "dest_port": 443, "user": "analyst", "host": "edge-gateway"}}
+{"event_type": "dns_query", "timestamp": "2026-10-31T04:13:02Z", "attributes": {"query": "api.internal.service", "resolved_ip": "10.0.0.50", "host": "edge-gateway"}}
+{"event_type": "privilege_escalation", "timestamp": "2026-10-31T04:13:15Z", "attributes": {"user": "analyst", "target_user": "root", "command": "/bin/cat /etc/shadow", "host": "edge-gateway"}}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "evidence_id": "TRACE-EV-000003",
+  "original_filename": "temp_systemd.json",
+  "size_bytes": 339,
+  "sha256": "bf6f6a56d8400640e06feaa5fb2a7f9de7d978b18f6197c482bdc07e84983bd7",
+  "ingested_at": "2026-10-31T01:11:06.149471Z",
+  "media_type": "application/json"
+}

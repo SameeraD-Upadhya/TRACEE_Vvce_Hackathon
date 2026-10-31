@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "format": "CSV UTF-8",
+  "primary_key": "record_id",
+  "fields": {
+    "record_id": {
+      "type": "string",
+      "nullable": true
+    },
+    "scenario_id": {
+      "type": "string",
+      "nullable": true
+    },
+    "correlation_id": {
+      "type": "string",
+      "nullable": true
+    },
+    "event_timestamp": {
+      "type": "string",
+      "nullable": true
+    },
+    "source_type": {
+      "type": "string",
+      "nullable": true
+    },
+    "host": {
+      "type": "string",
+      "nullable": true
+    },
+    "host_os": {
+      "type": "string",
+      "nullable": true
+    },
+    "channel": {
+      "type": "string",
+      "nullable": true
+    },
+    "provider": {
+      "type": "string",
+      "nullable": true
+    },
+    "event_code": {
+      "type": "string",
+      "nullable": true
+    },
+    "event_type": {
+      "type": "string",
+      "nullable": true
+    },
+    "severity": {
+      "type": "string",
+      "nullable": true
+    },
+    "outcome": {
+      "type": "string",
+      "nullable": true
+    },
+    "user": {
+      "type": "string",
+      "nullable": true
+    },
+    "source_ip": {
+      "type": "string",
+      "nullable": true
+    },
+    "destination_ip": {
+      "type": "string",
+      "nullable": true
+    },
+    "source_port": {
+      "type": "string",
+      "nullable": true
+    },
+    "destination_port": {
+      "type": "string",
+      "nullable": true
+    },
+    "protocol": {
+      "type": "string",
+      "nullable": true
+    },
+    "process_name": {
+      "type": "string",
+      "nullable": true
+    },
+    "parent_process": {
+      "type": "string",
+      "nullable": true
+    },
+    "command_line": {
+      "type": "string",
+      "nullable": true
+    },
+    "file_path": {
+      "type": "string",
+      "nullable": true
+    },
+    "file_operation": {
+      "type": "string",
+      "nullable": true
+    },
+    "domain": {
+      "type": "string",
+      "nullable": true
+    },
+    "dns_query_type": {
+      "type": "string",
+      "nullable": true
+    },
+    "service_name": {
+      "type": "string",
+      "nullable": true
+    },
+    "service_action": {
+      "type": "string",
+      "nullable": true
+    },
+    "http_method": {
+      "type": "string",
+      "nullable": true
+    },
+    "url_path": {
+      "type": "string",
+      "nullable": true
+    },
+    "http_status": {
+      "type": "string",
+      "nullable": true
+    },
+    "bytes_sent": {
+      "type": "string",
+      "nullable": true
+    },
+    "bytes_received": {
+      "type": "string",
+      "nullable": true
+    },
+    "auth_method": {
+      "type": "string",
+      "nullable": true
+    },
+    "log_level": {
+      "type": "string",
+      "nullable": true
+    },
+    "message": {
+      "type": "string",
+      "nullable": true
+    },
+    "synthetic": {
+      "type": "string",
+      "nullable": true
+    },
+    "sequence_no": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "notes": [
+    "All values are synthetic.",
+    "event_timestamp is UTC ISO-8601 with Z.",
+    "event_code is source-native numeric/text identifier, not record_id.",
+    "ground truth is intentionally external to evidence CSVs."
+  ]
+}

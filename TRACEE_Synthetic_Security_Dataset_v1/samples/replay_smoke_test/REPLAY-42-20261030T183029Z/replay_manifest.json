@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "run_id": "REPLAY-42-20261030T183029Z",
+  "dataset_version": "1.0.0",
+  "dataset_seed": 20261030,
+  "replay_seed": 42,
+  "selection": "random reservoir sample per source; replay order shuffled deterministically per source",
+  "records_per_source_limit": 25,
+  "batch_size": 25,
+  "total_records": 250,
+  "batch_count": 10,
+  "batches": [
+    {
+      "source_id": "linux_auth",
+      "parser_id": "linux_auth",
+      "file": "linux_auth/linux_auth-batch-0001.log",
+      "record_count": 25,
+      "size_bytes": 1602,
+      "sha256": "9527f609ccce43a1dd931ffb1939c144a35479d06f97dc77331578f9e1c7e063",
+      "record_id_first": "TRC-DATA-000024160",
+      "record_id_last": "TRC-DATA-000034173"
+    },
+    {
+      "source_id": "systemd_journal",
+      "parser_id": "systemd_journal",
+      "file": "systemd_journal/systemd_journal-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 11977,
+      "sha256": "b1dc0e93d57a465e134677191c5db4d0c88baed63e45fdcb8b17fb94348de67e",
+      "record_id_first": "TRC-DATA-000164135",
+      "record_id_last": "TRC-DATA-000160311"
+    },
+    {
+      "source_id": "windows_security",
+      "parser_id": "windows_event",
+      "file": "windows_security/windows_security-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 27079,
+      "sha256": "827b7090fc38f2fae1af5c6057ca51541e2f6134f84fd9c514f9fc0544b76b97",
+      "record_id_first": "TRC-DATA-000198444",
+      "record_id_last": "TRC-DATA-000230278"
+    },
+    {
+      "source_id": "windows_sysmon",
+      "parser_id": "windows_event",
+      "file": "windows_sysmon/windows_sysmon-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 30028,
+      "sha256": "f77ad7a57b5f761101ff384e9789f383136792d1ee69aa90623865223302a5fb",
+      "record_id_first": "TRC-DATA-000291565",
+      "record_id_last": "TRC-DATA-000005837"
+    },
+    {
+      "source_id": "process_activity",
+      "parser_id": "json_event",
+      "file": "process_activity/process_activity-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 15156,
+      "sha256": "fdd366e0ebf15f43e9709d2a499c45c3899192a56a1859fed088736e83acc11d",
+      "record_id_first": "TRC-DATA-000432436",
+      "record_id_last": "TRC-DATA-000416863"
+    },
+    {
+      "source_id": "network_flow",
+      "parser_id": "json_event",
+      "file": "network_flow/network_flow-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 15760,
+      "sha256": "811e4381c059634d5b110decbe3e4cb1353eda94e8ec8317a9681329ca73c573",
+      "record_id_first": "TRC-DATA-000469509",
+      "record_id_last": "TRC-DATA-000478779"
+    },
+    {
+      "source_id": "dns",
+      "parser_id": "json_event",
+      "file": "dns/dns-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 15255,
+      "sha256": "e2164f1f9267e1499ed3a0522c6f4eb0c31782980446b3ab649db98c23a72657",
+      "record_id_first": "TRC-DATA-000558835",
+      "record_id_last": "TRC-DATA-000522256"
+    },
+    {
+      "source_id": "filesystem",
+      "parser_id": "json_event",
+      "file": "filesystem/filesystem-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 14867,
+      "sha256": "61deb33815246572485d07c5429eeb44a43dc392e07d3f15bb84ee082915774e",
+      "record_id_first": "TRC-DATA-000573984",
+      "record_id_last": "TRC-DATA-000608963"
+    },
+    {
+      "source_id": "service_persistence",
+      "parser_id": "json_event",
+      "file": "service_persistence/service_persistence-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 15095,
+      "sha256": "f61ae2a5cae9e6935351f4ed43f3007892c3934a25177c3f6861360d0384a3ee",
+      "record_id_first": "TRC-DATA-000670770",
+      "record_id_last": "TRC-DATA-000644345"
+    },
+    {
+      "source_id": "web_application",
+      "parser_id": "json_event",
+      "file": "web_application/web_application-batch-0001.jsonl",
+      "record_count": 25,
+      "size_bytes": 16273,
+      "sha256": "4c0a86a0f673d527bd620cf9968e1edd7da722816540100c511632e4d89732c7",
+      "record_id_first": "TRC-DATA-000732490",
+      "record_id_last": "TRC-DATA-000719913"
+    }
+  ],
+  "synthetic": true,
+  "note": "event timestamps are preserved; replay/acquisition timestamps must be recorded separately by the consuming simulation."
+}
